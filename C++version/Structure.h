@@ -7,6 +7,7 @@
 // included dependencies
 #include<iostream>
 #include<vector>
+#include <ginac/ginac.h> //læs op på GiNaC
 
 //===========================================================================
 // The acutual class
@@ -15,16 +16,16 @@ private:
 
 
 public:
-//Constructor that takes instructions and construct subunit table and linked table
-Structure();
+//Constructor that takes instructions linked table and subUnit. 
+Virtual Structure() = 0 //læs op på virtual og structures
 
 
 
 //creates subunit using the subunit class, put that subunit into the subunit table
-void create();
+void create(); // SKAL NOK IKKE VÆRE MED HER. 
 
 //Links sub units refenerence point together 
-void link();
+//void link(); // eksisterer i graf
 
 //returns the formfactor of the structure build
 string formFactor();
@@ -37,7 +38,7 @@ string phaseFactor();
 
 };
 
-
+DET HELE SKAL VÆRE VIRTUAL OG ABSTRAC (TING BLIVER DECLARERET)
 
 
 
