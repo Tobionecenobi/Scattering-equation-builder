@@ -15,23 +15,24 @@ private:
 
 
 public:
-//Constructor that takes instructions and construct subunit table and linked table
-SubUnit();
+//Subunit Constructor
+SubUnit( int id);
+int subId;
 
 
 
-//returns the formfacetor amplitude of the sub unit as a function, a char and latex-string
-array formfactorAmplitude(typ, name , Aeq );
+// //returns the formfacetor amplitude of the sub unit as a function, a char and latex-string
+// array formfactorAmplitude(typ, name , Aeq );
 
-//returns the formfactor of the sub unit as a function, a char and latex-string
-array formfactor(typ, name , Feq );
+// //returns the formfactor of the sub unit as a function, a char and latex-string
+// array formfactor(typ, name , Feq );
 
-//returns the phasefactor of the amplitude as a function, a char and latex-string
-array phasefactor(typ, name, PHIeq);
+// //returns the phasefactor of the amplitude as a function, a char and latex-string
+// array phasefactor(typ, name, PHIeq);
 
-//returns reference point where it can stick to other subunits (could be some function descibing the surface of the subunit)
-void referencePoints();
-
+// //returns reference point where it can stick to other subunits (could be some function descibing the surface of the subunit)
+// void referencePoints();
+    
 
 };
 
