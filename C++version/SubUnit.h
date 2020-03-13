@@ -7,18 +7,33 @@
 // included dependencies
 #include<iostream>
 #include<vector>
+#include <ginac/ginac.h> 
+using namespace GiNaC;
 
 //===========================================================================
 // The acutual class
 class SubUnit{
 private:
-
+    int subId;
+    ex Fsub;
+    ex PSIsub;
+    ex Asub;
 
 public:
 //Subunit Constructor
-SubUnit( int id);
-int subId;
+    SubUnit( int id);
+    int getId();
+    ex getFormFactor();
+    ex getAmplitudeFactor();
+    ex getPhaseFactor();
+    void setFormFactor(ex input_Fsub);
+    void setAmplitudeFactor(ex input_Asub);
+    void setPhaseFactori(ex input_PSIsub);
 
+
+    
+
+//Gets formfactor of subunit object
 
 
 // //returns the formfacetor amplitude of the sub unit as a function, a char and latex-string

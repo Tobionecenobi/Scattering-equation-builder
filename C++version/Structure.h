@@ -7,23 +7,37 @@
 // included dependencies
 #include<iostream>
 #include<vector>
-//#include <ginac/ginac.h> //læs op på GiNaC
-
+#include <ginac/ginac.h> 
+using namespace GiNaC;
 //===========================================================================
 // The acutual class
 class Structure{
 private:
-
+//Empty formfactor eq made needs ginac libarary
+    
 
 
 public:
-//Constructor that takes instructions linked table and subUnit. 
+//Public variables
+    symbol x("x");
+    ex Fstruct;
+    ex PSIstruct;
+    ex Astruct;
+//Constructor with methods. 
     Structure( int id);
-    int structId;
+    int getId();
+    ex getFormFactor();
+    ex getAmplitudeFactor();
+    ex getPhaseFactor();
+    void setFormFactor(ex input_Fstruct);
+    void setAmplitudeFactor(ex input_Astruct);
+    void setPhaseFactor(ex input_PSIstruct);
+//Adds updated formfactor to the structure
+    ex addFormFactor(&sub1);
 
 
 //creates subunit using the subunit class, put that subunit into the subunit table
-void create(); // SKAL NOK IKKE VÆRE MED HER. 
+//void create(); // SKAL NOK IKKE VÆRE MED HER. 
 
 //add sub unit to 
 
