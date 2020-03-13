@@ -5,16 +5,16 @@
 #include "SubUnit.h"
 
 int main ( int argc, const char* argv[]){
-     int structId = 0;
-     int subId = 0;
-     Structure Struct1(structId);
-     SubUnit sub1(subId);
+    int structId = 0;
+    int subId = 0;
+    Structure Struct1(structId);
+    SubUnit sub1(subId);
 
-    Structure.add(&Sub1);
+    Structure.addFormFactor( &Struct1 , &Sub1 );
 
     //  std::cout << Structure.Formfactor();
 
-    //  Subunit sub2(subID + 1);
+    //  Subunit sub2(subID++);
 
     //  Structure.add(&sub2)
     return 0;
