@@ -1,50 +1,52 @@
 #include <iostream>
+#include <string>
 #include <ginac/ginac.h> 
 using namespace GiNaC;
-#include "Structure.h"
-#include "SubUnit.h"
-
+#include "Structure.hpp"
+//#include "SubUnit.hpp"
+using namespace std;
 
 //parametrized Structure Constructor
-Structure::Structure( int id )
-          : structId(id)
+Structure::Structure( string id )
+: structId(id)
 {
-    std::cout << "Structure: " << structId << ", is created" << "\n";
-    id = structId;
-    Fstruct = symbol F("F");
-    Astruct = symbol A("A");
-    PSIstruct = symbol PSI("PSI", "\psi");
-}
+    std::cout << "Structure: " << id << ", is created" << "\n";
+    Structure::id = id;
+    symbol F("F"), A("A"), PSI("PSI"); //I'm not sure why they have to be in the constructor
+    ex Fstruct = F;
+    ex Astruct = A;
+    ex PSIstruct = PSI;
+};
 //get methods for the constructer
-Strcuture::getId(){
-    return id;
-}
+//get_Id(){
+//    return id;
+//}
 
-Structure::getFormFactor(){
+ex getFormFactor(){
     return Fstruct;
 }
 
-Structure::getAmplitudeFactor(){
-    return Astruct
-}
+// getAmplitudeFactor(){
+//     return Astruct
+// }
 
-Structure::getPhaseFactor(){
-    return PSIstruct;
-}
+// getPhaseFactor(){
+//     return PSIstruct;
+// }
 
-Structure::setFormFactor( ex input_Fstruct ){
-    Fstruct = input_Fstruct;
-}
+// setFormFactor( ex input_Fstruct ){
+//     Fstruct = input_Fstruct;
+// }
 
-Structure::setAmplitudeFactor( ex input_Astruct ){
-    Astruct = input_Astruct;
-}
+// setAmplitudeFactor( ex input_Astruct ){
+//     Astruct = input_Astruct;
+// }
 
-Structure::setPhaseFactor( ex input_PSIstruct){
-    PSIstruct = input_PSIstruct;
-}
+// setPhaseFactor( ex input_PSIstruct){
+//     PSIstruct = input_PSIstruct;
+// }
 
-//adds a subunit to the structure
-ex addFormFactor( &Structure , &SubUnit ){
-    *Structure.setFormFactor( *SubUnit.getFormFactor() );
-};
+// //adds a subunit to the structure
+// addSubUnit( &struc , &sub ){
+//     struc.setFormFactor( sub.getFormFactor() );
+// };

@@ -1,16 +1,21 @@
-#include <stdio.h>
+Scod#include <stdio.h>
 #include <iostream> 
+#include <string>
 #include <ginac/ginac.h>
-#include "Structure.h"
-#include "SubUnit.h"
+#include "Structure.hpp"
+#include "SubUnit.hpp"
+#include "Structure.cpp"
+#include "SubUnit.cpp"
+using namespace std;
+
 
 int main ( int argc, const char* argv[]){
-    int structId = 0;
-    int subId = 0;
-    Structure Struct1(structId);
+    string structId = "General Structure";
+    string subId = "General SubUnit";
+    Structure struct1(structId);
     SubUnit sub1(subId);
 
-    Structure.addFormFactor( &Struct1 , &Sub1 );
+    sub1.addSubUnit( struct1 );
 
     //  std::cout << Structure.Formfactor();
 
