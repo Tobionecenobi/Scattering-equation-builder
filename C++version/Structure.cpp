@@ -6,6 +6,15 @@ using namespace GiNaC;
 //#include "SubUnit.hpp"
 using namespace std;
 
+/*I HAVE ABSOLUTE NO IDEA WHY THESE VARIABLE NEEDS TO BE DEFINED HERE
+  TO WORK. WHO HAVE ACCESS, ARE THEY PRIVATE, PUBLIC OR WHAT? I'M VERY
+  CONFUSED ABOUT THIS*/
+    string structId;
+    string id;
+    ex Fstruct;
+    ex Astruct;
+    ex PSIstruct;
+
 //parametrized Structure Constructor
 Structure::Structure( string id )
 : structId(id)
@@ -16,37 +25,36 @@ Structure::Structure( string id )
     ex Fstruct = F;
     ex Astruct = A;
     ex PSIstruct = PSI;
-};
+}
 //get methods for the constructer
-//get_Id(){
-//    return id;
-//}
+string get_Id(){
+    return id;
+}
 
 ex getFormFactor(){
     return Fstruct;
 }
 
-// getAmplitudeFactor(){
-//     return Astruct
-// }
+ex getAmplitudeFactor(){
+    return Astruct;
+}
 
-// getPhaseFactor(){
-//     return PSIstruct;
-// }
+ex getPhaseFactor(){
+    return PSIstruct;
+}
 
-// setFormFactor( ex input_Fstruct ){
-//     Fstruct = input_Fstruct;
-// }
+void setFormFactor( ex input_Fstruct ){
+    Fstruct = input_Fstruct;
+}
 
-// setAmplitudeFactor( ex input_Astruct ){
-//     Astruct = input_Astruct;
-// }
+void setAmplitudeFactor( ex input_Astruct ){
+    Astruct = input_Astruct;
+}
 
-// setPhaseFactor( ex input_PSIstruct){
-//     PSIstruct = input_PSIstruct;
-// }
+void setPhaseFactor( ex input_PSIstruct){
+    PSIstruct = input_PSIstruct;
+}
 
-// //adds a subunit to the structure
-// addSubUnit( &struc , &sub ){
-//     struc.setFormFactor( sub.getFormFactor() );
-// };
+// void addSubUnit( SubUnit& sub1 ){
+//  make   Fstruct = Fstruct + sub1.getFormFactor();
+// }
