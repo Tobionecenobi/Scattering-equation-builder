@@ -24,35 +24,35 @@ needed to be implemented here, since they are the same for all derived classes.
 
 //===========================================================================
 // The acutual class
-class SubUnit {
+class SubUnit {                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
 public:
 
-    SubunitID id;
-    TypeID type;
+    SubunitID id;                                                           //sætter sub unit id til at være id <==== hvordan ved vi at det er af type string???
+    TypeID type;                                                            //type id fortæller hvilken slags type sub unit vi har
     
     double excessScatteringLength;  // beta bumber we need when calculating numbers.
     int scatteres;                  // Number of scattering sites, needed for coupling to pyPRISM.
     
-    ex FormFactor;
-    map<RelRefPoint,ex> FormFactorAmplitudes;
-    map<RelLink, ex> PhaseFactors;
+    ex FormFactor;                                                          //definere formfactoren til at være en equation
+    map<RelRefPoint,ex> FormFactorAmplitudes;                               // map: key er relrefpoint og mapper til en formfactor amplitude equation
+    map<RelLink, ex> PhaseFactors;                                          // map: key er et rellink og mapper til en fase faktor equation
 
-    RelativeReferencePointSet RefPoints;
+    RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
     
 //Subunit Constructor
-    SubUnit( SubunitID sid ) : id(sid)
+    SubUnit( SubunitID sid ) : id(sid)                                      //subunit constructor der er af type abstract. dvs at man SKAL lave en constructor i den bestemte type
     {
         type=ABSTRACT;
     }
 
-    virtual void AddReferencePoint( RelRefPoint R )
+    virtual void AddReferencePoint( RelRefPoint R )                         //adder reference points til en abstract subunit
       {
          auto ret=RefPoints.insert(R);
          if (!ret.second) cout << "DIE Refpoint already in Refpointset";
       }
 
-    virtual SubunitID getId() { return id; }
-    virtual TypeID    getType() { return type; }
+    virtual SubunitID getId() { return id; }                                //returner subunit id
+    virtual TypeID    getType() { return type; }                            //returner typen af subunit vi har
     
     virtual ex getFormFactor()                              { return FormFactor; }
     virtual ex getAmplitudeFactor(RelRefPoint &R)           { return FormFactorAmplitudes[R]; }  // Check R and L exists in maps

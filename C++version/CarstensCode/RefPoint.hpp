@@ -24,7 +24,7 @@
 // Since sub-unit ids are unique, we can always address any reference point by such a string combination.
 // Inside a sub-unit, we only need the referencepoint_ids  I think of these as relative to the sub-unit itself.
 
-typedef string StructureID;
+typedef string StructureID; //omdøber string til structure ID
 typedef string SubunitID;
 typedef string RelRefPoint;
 
@@ -33,34 +33,34 @@ public:
     SubunitID   subID;      // Name of sub-unit
     RelRefPoint refID;      // Name of reference on that sub-unit
 
-    AbsRefPoint() : subID(""), refID("") {;}
-    AbsRefPoint(SubunitID _subID, RelRefPoint _refID) : subID(_subID), refID(_refID) {;}
+    AbsRefPoint() : subID(""), refID("") {;}                                                    //definere abseloute reference punkter når der ikke er nogle dvs. en tom streng
+    AbsRefPoint(SubunitID _subID, RelRefPoint _refID) : subID(_subID), refID(_refID) {;}        //definere absolute refpoint når de er fyldte
     
-    SubunitID        GetsubID() const { return subID; }
-    RelRefPoint GetrefID()      const { return refID; }
+    SubunitID   GetsubID()      const { return subID; }                                         //giver subunit id
+    RelRefPoint GetrefID()      const { return refID; }                                         //giver reference punkt id
 
-    void SetsubID(SubunitID _subID)        { subID=_subID; }
-    void SetrefID(RelRefPoint _refID) { refID=_refID; }
+    void SetsubID(SubunitID _subID)   { subID=_subID; }                                         //sætter subunit id
+    void SetrefID(RelRefPoint _refID) { refID=_refID; }                                         //sætter refencepunkt id
     
-    string operator()()        const {  return subID+":"+refID; }
-    string GetAbsRefPoint()    const {  return subID+":"+refID; }
+    string operator()()        const {  return subID+":"+refID; }                               //giver operator til at definere boolean måske <================
+    string GetAbsRefPoint()    const {  return subID+":"+refID; }                               //giver absolute reference punkt = refid og subid
 
 // We probably also need a comparison operator for RefPoints for sorting in maps
-    bool operator <(AbsRefPoint &b) const { return GetAbsRefPoint()<b.GetAbsRefPoint(); }
+    bool operator <(AbsRefPoint &b) const { return GetAbsRefPoint()<b.GetAbsRefPoint(); }       //forklarer hvordan boolean kan sammenligne abseloute reference punkter
 };
 
 inline bool operator <(const AbsRefPoint &R1, const AbsRefPoint &R2) { return R1.GetAbsRefPoint()<R2.GetAbsRefPoint(); }
 inline bool operator <(AbsRefPoint &R1, AbsRefPoint &R2) { return R1.GetAbsRefPoint()<R2.GetAbsRefPoint(); }
 
-typedef set<AbsRefPoint>      AbsoluteReferencePointSet;      // Could be used in structure to keep track of all Refpoints
-typedef list<AbsRefPoint>     AbsoluteReferencePointList;     // Could be used for representing a path through a structure.
-typedef set<RelRefPoint>      RelativeReferencePointSet;      // Could be used in a subunit to list reference points
+typedef map<RelRefPoint,AbsRefPoint>      AbsoluteReferencePointMap;      // Could be used in structure to keep track of all Refpoints
+typedef list<AbsRefPoint>                 AbsoluteReferencePointList;     // Could be used for representing a path through a structure.
+typedef set<RelRefPoint>                  RelativeReferencePointSet;      // Could be used in a subunit to list reference points
 
 /*
 
 */
 
-class AbsLink : public pair<AbsRefPoint,AbsRefPoint>
+class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                                    //linker abseloute referencepunkter og sorterer dem efer id.
 {
   public:
    AbsLink(AbsRefPoint &R1,AbsRefPoint &R2)
@@ -77,16 +77,16 @@ class AbsLink : public pair<AbsRefPoint,AbsRefPoint>
             }
      }
 
-    string GetLink() { return first.GetAbsRefPoint()+"<=>"+second.GetAbsRefPoint(); } 
+    string GetLink() { return first.GetAbsRefPoint()+"<=>"+second.GetAbsRefPoint(); }   //returnere linket som en streng
        
-    bool operator <(AbsLink &b) { return GetLink()<b.GetLink(); }
+    bool operator <(AbsLink &b) { return GetLink()<b.GetLink(); }                       //fortæller boolean hvordan man kan sammenligne links
 };
 
 inline bool operator<(AbsLink &R1, AbsLink &R2) { return R1.GetLink()<R2.GetLink(); }
 
 
 
-class RelLink: public pair<RelRefPoint,RelRefPoint>
+class RelLink: public pair<RelRefPoint,RelRefPoint>                                     //linker kun reference punkter men ikke dens subunit.
 {
   public:
 
@@ -104,8 +104,8 @@ class RelLink: public pair<RelRefPoint,RelRefPoint>
             }
      }
   
-    string GetLink() { return first+"<=>"+second; } 
-    bool operator <(RelLink &b) { return GetLink()<b.GetLink(); }  
+    string GetLink() { return first+"<=>"+second; }                                     //returnerer relLinks som en streng          
+    bool operator <(RelLink &b) { return GetLink()<b.GetLink(); }                       //forklarer boolean hvordan man sammenligner to links
 };
 
 inline bool operator<(RelLink &R1, RelLink &R2) { return R1.GetLink()<R2.GetLink(); }
