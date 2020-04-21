@@ -51,8 +51,9 @@ public:
          if (!ret.second) cout << "DIE Refpoint already in Refpointset";
       }
 
-    virtual SubunitID getId() { return id; }                                //returner subunit id
-    virtual TypeID    getType() { return type; }                            //returner typen af subunit vi har
+    virtual SubunitID                 getId() { return id; }                //returner subunit id
+    virtual TypeID                    getType() { return type; }            //returner typen af subunit vi har
+    virtual RelativeReferencePointSet getRelRefSet() { return RefPoints; }  //returner relativerefpoints
     
     virtual ex getFormFactor()                              { return FormFactor; }
     virtual ex getAmplitudeFactor(RelRefPoint &R)           { return FormFactorAmplitudes[R]; }  // Check R and L exists in maps

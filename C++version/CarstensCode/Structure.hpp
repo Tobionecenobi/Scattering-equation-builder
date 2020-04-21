@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <queue> 
 #include <ginac/ginac.h>    
 
 using namespace GiNaC;
@@ -30,7 +31,7 @@ public:
 
 // En struktur har brug for at vide alle de subunit IDer den indeholder er unikke. Derfor dette set.    
     
-    AbsoluteReferencePointMap StructRefPoints;                        //som sagt ovenover vi gemmer alle subunits som et set, et set kræver at hvert element er unikt. Jeg ved ikke om dette er nødvendigt
+    AbsoluteReferencePointSet StructRefPoints;                        //som sagt ovenover vi gemmer alle subunits som et set, et set kræver at hvert element er unikt. Jeg ved ikke om dette er nødvendigt
                                                                 //da et map har de samme egenskaber
     
 // En struktur har brug for at vide alle de reference-punkter som den indeholder er unikke. Derfor dette set.
@@ -56,11 +57,20 @@ public:
     void AddAbsoluteRefPoints(SubUnit* pS);
 
 //Link relativereference point to absolute referencepoint (and maybe convert all relative reference points on subunit to absolute referencepoints)
-    void Link(RelRefPoint Rr, AbsRefPoint Ra);
+    void Link(AbsRefPoint Rr, AbsRefPoint Ra);
+
+//Checks if SubUnit exist
+    bool SubUnitExist( SubUnit* pS );
 
 // Join pS to structure where R on structure is linked to R in the existing structure.
 // How to handle the empty structure, where R should be "".
     void Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra);     // adder to subunits sammen i strukturen
+
+    bool isLinked(AbsRefPoint& R1, AbsRefPoint& R2);
+
+    set<AbsRefPoint> NeighborAbsRef( AbsRefPoint& x );
+
+    vector<AbsRefPoint> searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J);
 
     AbsoluteReferencePointList* FindPath(AbsLink &L);           // er ikke defineret endnu
 

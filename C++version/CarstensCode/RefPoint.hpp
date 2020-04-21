@@ -51,8 +51,11 @@ public:
 
 inline bool operator <(const AbsRefPoint &R1, const AbsRefPoint &R2) { return R1.GetAbsRefPoint()<R2.GetAbsRefPoint(); }
 inline bool operator <(AbsRefPoint &R1, AbsRefPoint &R2) { return R1.GetAbsRefPoint()<R2.GetAbsRefPoint(); }
+inline bool operator ==(AbsRefPoint &R1, AbsRefPoint &R2) { return R1.GetAbsRefPoint() == R2.GetAbsRefPoint();}
+inline bool operator ==(const AbsRefPoint &a, const AbsRefPoint &b) {return a.GetAbsRefPoint()==b.GetAbsRefPoint(); }
+inline bool operator !=(AbsRefPoint &R1, AbsRefPoint &R2) { return R1.GetAbsRefPoint() != R2.GetAbsRefPoint();}
 
-typedef map<RelRefPoint,AbsRefPoint>      AbsoluteReferencePointMap;      // Could be used in structure to keep track of all Refpoints
+typedef set<AbsRefPoint>                  AbsoluteReferencePointSet;      // Could be used in structure to keep track of all Refpoints
 typedef list<AbsRefPoint>                 AbsoluteReferencePointList;     // Could be used for representing a path through a structure.
 typedef set<RelRefPoint>                  RelativeReferencePointSet;      // Could be used in a subunit to list reference points
 
@@ -60,10 +63,10 @@ typedef set<RelRefPoint>                  RelativeReferencePointSet;      // Cou
 
 */
 
-class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                                    //linker abseloute referencepunkter og sorterer dem efer id.
+class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                                   //linker abseloute referencepunkter og sorterer dem efer id.
 {
   public:
-   AbsLink(AbsRefPoint &R1,AbsRefPoint &R2)
+    AbsLink(AbsRefPoint &R1,AbsRefPoint &R2)
      {
         if (R1<R2)
             {
@@ -80,6 +83,19 @@ class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                            
     string GetLink() { return first.GetAbsRefPoint()+"<=>"+second.GetAbsRefPoint(); }   //returnere linket som en streng
        
     bool operator <(AbsLink &b) { return GetLink()<b.GetLink(); }                       //fortæller boolean hvordan man kan sammenligne links
+
+    bool isPartnerOfPairLink( AbsRefPoint& x ) const {  return (first == x || second == x) ; } //RENAME TO MEMBER <=========== har lovet 
+
+    const AbsRefPoint& getLinkMember( AbsRefPoint& x ) const { 
+        if(first == x){
+            return second;
+        }
+        else if( second == x ){
+            return first;
+        }
+        else {  cout << "Partner does not exist";
+                return second; }
+    }
 };
 
 inline bool operator<(AbsLink &R1, AbsLink &R2) { return R1.GetLink()<R2.GetLink(); }
