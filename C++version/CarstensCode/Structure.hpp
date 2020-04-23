@@ -68,9 +68,13 @@ public:
 
     bool isLinked(AbsRefPoint& R1, AbsRefPoint& R2);
 
+    bool refLinkedToSubUnit(AbsRefPoint& I, SubunitID sid);
+
     set<AbsRefPoint> NeighborAbsRef( AbsRefPoint& x );
 
     vector<AbsRefPoint> searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J);
+
+    vector<AbsRefPoint> searchRef2SubUnit(AbsRefPoint& I, SubunitID sid);
 
     AbsoluteReferencePointList* FindPath(AbsLink &L);           // er ikke defineret endnu
 

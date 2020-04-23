@@ -54,7 +54,7 @@ inline bool operator <(AbsRefPoint &R1, AbsRefPoint &R2) { return R1.GetAbsRefPo
 inline bool operator ==(AbsRefPoint &R1, AbsRefPoint &R2) { return R1.GetAbsRefPoint() == R2.GetAbsRefPoint();}
 inline bool operator ==(const AbsRefPoint &a, const AbsRefPoint &b) {return a.GetAbsRefPoint()==b.GetAbsRefPoint(); }
 inline bool operator !=(AbsRefPoint &R1, AbsRefPoint &R2) { return R1.GetAbsRefPoint() != R2.GetAbsRefPoint();}
-
+inline bool operator !=(const AbsRefPoint &R1, const AbsRefPoint &R2) { return R1.GetAbsRefPoint() != R2.GetAbsRefPoint();}
 typedef set<AbsRefPoint>                  AbsoluteReferencePointSet;      // Could be used in structure to keep track of all Refpoints
 typedef list<AbsRefPoint>                 AbsoluteReferencePointList;     // Could be used for representing a path through a structure.
 typedef set<RelRefPoint>                  RelativeReferencePointSet;      // Could be used in a subunit to list reference points
