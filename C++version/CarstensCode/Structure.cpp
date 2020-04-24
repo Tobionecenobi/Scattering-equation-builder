@@ -204,7 +204,7 @@ bool Structure::refLinkedToSubUnit(AbsRefPoint& I, SubunitID sid){
   return false;
 }
 
-vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint& I, SubunitID sid){
+vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
   vector<AbsRefPoint> path; 
 
   //checks if reference point is not on the subunit or linked to the subunit
@@ -249,7 +249,7 @@ vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint& I, SubunitID sid){
   if( x.GetsubID() != sid )                                                          //if I is not found print a message
     { cout << "When looking for path " << I.GetAbsRefPoint() << " to subunit " << sid << ", " << sid << " could not be found" << "\n" ;}
 
-  if( x.GetsubID == sid ){
+  if( x.GetsubID() == sid ){
 
     map<AbsRefPoint, AbsRefPoint>::iterator it = parent.find( x );      //finds x which is the first refence point that hit the subunit
 
@@ -260,7 +260,117 @@ vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint& I, SubunitID sid){
     }
     path.push_back( I );                                                //puts the missing refpoint I into the path
   }
+
   return path;                                                          // return path subunit-> A-> ...-> B-> I
+}
+
+//returns the oppisite path than searchSubunit2ref
+vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint& I, SubunitID sid){
+  vector<AbsRefPoint> path;
+  vector<AbsRefPoint> oppisitepath =searchSubUnit2Ref( I , sid );
+  vector<AbsRefPoint>::iterator it = oppisitepath.end();
+
+  for(it; it != oppisitepath.begin(); it--){ 
+    path.push_back( *it );
+  }
+
+  return path;
+}
+
+//returns the path between two Subunits
+bool Structure::subUnitLinkedToSubUnit(SubunitID sid1 , SubunitID sid2 ){
+  
+  map<SubunitID , SubUnit*>::iterator itmap;                                             //Find the subunits and get its relativereference points
+  
+  itmap = StoredSubUnits.find( sid1 ); 
+  RelativeReferencePointSet relrefset1 = itmap -> second -> getRelRefSet();
+
+  itmap = StoredSubUnits.find( sid2 ); 
+  RelativeReferencePointSet relrefset2 = itmap -> second -> getRelRefSet();
+
+  set<RelRefPoint>::iterator it1;                                                    
+  set<RelRefPoint>::iterator it2;
+  for( it1 = relrefset1.begin(); it1 != relrefset1.end(); it1++ ){
+   
+    AbsRefPoint abs1 = AbsRefPoint( sid1 , *it1 );
+    
+    for(it2 =relrefset2.begin(); it2 != relrefset2.end(); it2++){
+
+    AbsRefPoint abs2 = AbsRefPoint( sid2 , *it2 );
+    if(isLinked( abs1 , abs2 )) return true;
+    }
+  }
+  return false;
+}
+
+vector<AbsRefPoint> Structure::searchSubUnit2SubUnit( SubunitID sid1, SubunitID sid2){
+  
+  vector<AbsRefPoint> path; 
+
+  if( sid1 == sid2 ) return path;
+  if( subUnitLinkedToSubUnit( sid1, sid2) ) return path; 
+
+  //search front 
+  queue<AbsRefPoint> queue;
+
+  //Visited reference points
+  set<AbsRefPoint> visited;
+
+  //Child parent relation for making tree
+  map<AbsRefPoint,AbsRefPoint> parent;
+
+  //gives all referencepoints on a sub unit
+  map<SubunitID , SubUnit*>::iterator itmap;
+  itmap = StoredSubUnits.find( sid2 ); 
+  RelativeReferencePointSet relrefset2 = itmap -> second -> getRelRefSet();
+
+  set<RelRefPoint>::iterator it2;
+
+  //insert all of subunit1 reference point into queue and visited
+  for( it2 = relrefset2.begin(); it2 != relrefset2.end(); it2++ ){
+    AbsRefPoint abs2 = AbsRefPoint( sid2 , *it2 );
+    queue.push( abs2 );
+    visited.insert( abs2 );
+  }
+
+   AbsRefPoint x;
+  set<AbsRefPoint>::iterator it;
+
+  while(!queue.empty()){
+    x = queue.front();                                                  //sets x to be equal the oldest element in the queue
+    queue.pop();                                                        //removes the oldest element and return none
+
+    if( x.GetsubID() == sid1 ) break; 
+
+    set<AbsRefPoint> neighborList = NeighborAbsRef(x);
+
+    for( it = neighborList.begin() ; it != neighborList.end() ; ++it ){ //goes through every neigbor
+        
+      if(  visited.find( *it ) == visited.end() ) continue;             //checks if the neighbor is visited
+
+      //parent.insert( pair<AbsRefPoint , AbsRefPoint>( *it , x) );     //neigbor (child) maps to x (parent) making a tree.
+      parent[ *it ] = x; 
+      visited.insert( *it );                                            //put the neighbor to visited
+      queue.push( *it );                                                //put neigbor in the queue so it can be treated as x in the future
+    }
+  }
+
+  if( x.GetsubID() != sid1 )                                                          //if I is not found print a message
+    { cout << "When looking for path from subunit " << sid1 << " to subunit " << sid2 << ", " << sid1 << " could not be found" << "\n" ;}
+
+  if( x.GetsubID() == sid1 ){
+
+    map<AbsRefPoint, AbsRefPoint>::iterator it = parent.find( x );      //finds x which is the first refence point that hit the subunit
+    bool subUnitTouched = false; 
+
+  while( it -> first.GetsubID() != sid1 && subUnitTouched)                                           //Stops before I
+    {
+      path.push_back( it -> first );
+      it = parent.find( it -> second  );
+      if( it -> first.GetsubID() == sid1) subUnitTouched = true;
+    }
+  }
+  return path;
 }
 
 AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder pa th mellem to reference points og laver en liste med den path
