@@ -60,7 +60,9 @@ void Structure::Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra) //joiner to st
   
 
   else if ( subunits.find( pS -> getId() ) == subunits.end() ){        //Try so find the subunit id. If not found() returns end() to iterator. then checks if it == end().
-    Add( pS );
+    subunits.insert( pS -> getId() );
+    StoredSubUnits.insert( pair<SubunitID,SubUnit*>(pS -> getId() , pS) );
+    AddAbsoluteRefPoints( pS );
     Link( a , Ra );
   }
 }
@@ -106,6 +108,7 @@ set<AbsRefPoint> Structure::NeighborAbsRef( AbsRefPoint& x ){
     
     SubunitID subId = x.GetsubID(); //gets subunit ID
     itmap = StoredSubUnits.find( subId ); //finds subunit
+    if( itmap == StoredSubUnits.end() ) throw "noice";
     RelativeReferencePointSet relrefset = itmap -> second -> getRelRefSet(); //get relreferencepoints
     
     for(itrelref = relrefset.begin(); itrelref != relrefset.end(); itrelref++){ // convert relrefpoint to absrefpoint
@@ -157,11 +160,18 @@ vector<AbsRefPoint> Structure::searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J){
 
     set<AbsRefPoint> neighborList = NeighborAbsRef(x);
 
+    //test for checking that neigbour List is correct
+    cout << "The neigbors are for abselout reference point " << x.GetAbsRefPoint() << " : \n"; 
+    for( auto i = neighborList.begin(); i != neighborList.end(); i++){
+      cout << i -> GetAbsRefPoint() << ", ";
+    }
+    cout << "\n \n";
+
     for( it = neighborList.begin() ; it != neighborList.end() ; ++it ){ //goes through every neigbor
       
       //AbsRefPoint neighbor = *it; 
       
-      if(  visited.find( *it ) == visited.end() ) continue;             //checks if the neighbor is visited
+      if(  visited.find( *it ) != visited.end() ) continue;             //checks if the neighbor is visited
 
       //parent.insert( pair<AbsRefPoint , AbsRefPoint>( *it , x) );     //neigbor (child) maps to x (parent) making a tree.
       parent[ *it ] = x; 
@@ -179,11 +189,12 @@ vector<AbsRefPoint> Structure::searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J){
 
     map<AbsRefPoint, AbsRefPoint>::iterator it = parent.find( I );
 
-    while( it -> first != J )  // Stops before J
+    while( it -> second != J )  // Stops before J <=== Hvorfor skal den være second?
     {
       path.push_back( it -> first );
       it = parent.find( it -> second  );
     }
+    path.push_back( it -> first);
     path.push_back( J );
   }
   return path; 
@@ -237,7 +248,7 @@ vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
 
     for( it = neighborList.begin() ; it != neighborList.end() ; ++it ){ //goes through every neigbor
         
-      if(  visited.find( *it ) == visited.end() ) continue;             //checks if the neighbor is visited
+      if(  visited.find( *it ) != visited.end() ) continue;             //checks if the neighbor is visited
 
       //parent.insert( pair<AbsRefPoint , AbsRefPoint>( *it , x) );     //neigbor (child) maps to x (parent) making a tree.
       parent[ *it ] = x; 
@@ -253,11 +264,12 @@ vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
 
     map<AbsRefPoint, AbsRefPoint>::iterator it = parent.find( x );      //finds x which is the first refence point that hit the subunit
 
-    while( it -> first != I )                                           //Stops before I
+    while( it -> second != I )                                           //Stops before I
     {
       path.push_back( it -> first );
       it = parent.find( it -> second  );
     }
+    path.push_back( it -> first);
     path.push_back( I );                                                //puts the missing refpoint I into the path
   }
 
@@ -268,12 +280,11 @@ vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
 vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint& I, SubunitID sid){
   vector<AbsRefPoint> path;
   vector<AbsRefPoint> oppisitepath =searchSubUnit2Ref( I , sid );
-  vector<AbsRefPoint>::iterator it = oppisitepath.end();
+  vector<AbsRefPoint>::iterator it = oppisitepath.end() - 1;
 
-  for(it; it != oppisitepath.begin(); it--){ 
+  for(it; it <= oppisitepath.begin(); it--){ 
     path.push_back( *it );
   }
-
   return path;
 }
 
@@ -346,7 +357,7 @@ vector<AbsRefPoint> Structure::searchSubUnit2SubUnit( SubunitID sid1, SubunitID 
 
     for( it = neighborList.begin() ; it != neighborList.end() ; ++it ){ //goes through every neigbor
         
-      if(  visited.find( *it ) == visited.end() ) continue;             //checks if the neighbor is visited
+      if(  visited.find( *it ) != visited.end() ) continue;             //checks if the neighbor is visited
 
       //parent.insert( pair<AbsRefPoint , AbsRefPoint>( *it , x) );     //neigbor (child) maps to x (parent) making a tree.
       parent[ *it ] = x; 

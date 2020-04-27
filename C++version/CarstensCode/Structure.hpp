@@ -39,7 +39,7 @@ public:
     
     map<SubunitID,SubUnit*> StoredSubUnits;                     //her mapper vi subunits ved hjælp af deres subunit id, som mapper over til en subunit pointer der pejer på vores subunit objekt.
     
-    //set<pair<AbsRefPoint,AbsRefPoint> > Links;                  //her laver vi et sæt af unikke par hver del i parret kan fås gennem public members first and second
+//set<pair<AbsRefPoint,AbsRefPoint> > Links;                  //her laver vi et sæt af unikke par hver del i parret kan fås gennem public members first and second
     set<AbsLink> Links;
 // Links skal være absolutte
 
@@ -50,6 +50,9 @@ public:
 
     StructureID get_Id() { return id; }                         // returnerer id af en structur
 
+    map<SubunitID, SubUnit*> getStoredSubUnits(){
+        return StoredSubUnits;
+    };
 // Add first sub-unit   
     void Add(SubUnit* pS);                                      // adder en subunit til structuren
 
@@ -81,6 +84,16 @@ public:
     vector<AbsRefPoint> searchRef2SubUnit(AbsRefPoint& I, SubunitID sid);
 
     vector<AbsRefPoint> searchSubUnit2SubUnit(SubunitID sid1 , SubunitID sid2 );
+
+    void printPath( vector<AbsRefPoint> path){
+        for(auto i = path.begin(); i != path.end(); i++ ){
+            if( i + 1 == path.end()){
+            cout << i -> GetAbsRefPoint(); 
+            break;
+            }
+        cout << i -> GetAbsRefPoint() << "->";
+        }
+    }
 
     AbsoluteReferencePointList* FindPath(AbsLink &L);           // er ikke defineret endnu
 

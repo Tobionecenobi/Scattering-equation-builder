@@ -80,7 +80,7 @@ class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                            
             }
      }
 
-    string GetLink() { return first.GetAbsRefPoint()+"<=>"+second.GetAbsRefPoint(); }   //returnere linket som en streng
+    string GetLink() const { return first.GetAbsRefPoint()+"<=>"+second.GetAbsRefPoint(); }   //returnere linket som en streng
        
     bool operator <(AbsLink &b) { return GetLink()<b.GetLink(); }                       //fortæller boolean hvordan man kan sammenligne links
 

@@ -1,7 +1,7 @@
 //===========================================================================
 // Included guards
-#ifndef INCLUDE_GUARD_RWPOLYMER
-#define INCLUDE_GUARD_RWPOLYMER
+#ifndef INCLUDE_GUARD_GENERALSUBUNIT
+#define INCLUDE_GUARD_GENERALSUBUNITq
 
 //===========================================================================
 // included dependencies
@@ -35,28 +35,30 @@ This is a concrete polymer class, which produce expressions that can be evaluate
 
         symbol F("F");                                                               //definere symbol q
         symbol A("A");
-        symbol PSI("PSI");                                                           //definere symbol Rg2 plus subunit id
-        symbol i_sym("i"), j_sym("j"), sid_sym("sid"); 
+        symbol PSI("PSI");                                                           //definere symbol Rg2 plus subunit id 
        
         FormFactor = F;                                                              //giver formlen for formfactoren
         
-        for(int n = 1; n <= numOfRefPoints; n++){                                    //giver formfactoramplituden fra reference punkt end#i
-            idx i(i_sym, n), sid(sid_sym, sid);
-            FormFactorAmplitudes[ RelRefPoint("end" + to_string(n) ) ] = indexed(A, sid, i);      
+        for(int n = 1; n <= numOfRefPoints; n++){  
+            symbol i_sym( to_string(n) ), S_sym( sid );                                  //giver formfactoramplituden fra reference punkt end#i
+            idx i(i_sym, 1), S(S_sym, 1);
+            FormFactorAmplitudes[ RelRefPoint("end" + to_string(n) ) ] = indexed(A, S, i);      
         }
 
         for(int n = 1; n <= numOfRefPoints; n++){                                    //giver phasefaktoren for end#i og end#i
             PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string(n) )  ] = 1.0;
         }
 
-        for(int n = 1; n < numOfRefPoints; n++){                                     //giver fase faktoren for end#i end end#i+1
-            idx i(i_sym, n), j(j_sym, n + 1), sid(sid_sym, sid);
-            PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string( n + 1 ) ) ] = indexed( PSI, sid, i, j);     
+        for(int n = 1; n < numOfRefPoints; n++){  
+            symbol i_sym( to_string(n) ), j_sym( to_string(n+1) ), S_sym( sid );                                   //giver fase faktoren for end#i end end#i+1
+            idx i(i_sym, 1), j(j_sym, 1), S(S_sym, 1);
+            PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string( n + 1 ) ) ] = indexed( PSI, S, i, j);     
         }
 
         for(int n = numOfRefPoints; n > 1; n--){                                     //giver fase faktoren for end#i end end#i-1
-            idx i(i_sym, n - 1), j(j_sym, n ), sid(sid_sym, sid);
-            PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string( n - 1 ) ) ] = indexed( PSI, sid, i, j);     
+            symbol i_sym( to_string(n) ), j_sym( to_string(n-1) ), S_sym( sid );
+            idx i(i_sym, 1), j(j_sym, 1), S(S_sym, 1);
+            PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string( n - 1 ) ) ] = indexed( PSI, S, i, j);     
         }
 // more       
     }
