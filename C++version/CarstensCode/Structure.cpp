@@ -6,16 +6,18 @@
 using namespace GiNaC;
 using namespace std;
 
+//Inserts Absoulute Refence point into the list StructRefPoints
 void Structure::AddAbsoluteRefPoints(SubUnit* pS){
 
   set<RelRefPoint>::iterator it;
   
   for(it = pS -> RefPoints.begin(); it != pS -> RefPoints.end(); it++){
-    StructRefPoints.insert( AbsRefPoint( pS -> getId() , *it ) );        //<====== *it giver for håbenligt value og it er adressen
+    StructRefPoints.insert( AbsRefPoint( pS -> getId() , *it ) );
   }
 }
 
-void Structure::Add( SubUnit* pS )                                  //adder subunit til strukturen
+//Adds sub units to the structure by inserting sub units into the map StoredSubUnits
+void Structure::Add( SubUnit* pS )                                  
 {
   if(subunits.empty()){
     subunits.insert( pS -> getId() );
@@ -25,15 +27,18 @@ void Structure::Add( SubUnit* pS )                                  //adder subu
    // Test at strukturen er tom
 }
 
+//Links to abseloute reference point together by making an absoslute Link of the reference points.
 void Structure::Link( AbsRefPoint Ra, AbsRefPoint Rb){
   Links.insert( AbsLink( Ra , Rb ) );
 }
 
+//Checks if a sub unit exist.
 bool Structure::SubUnitExist( SubUnit* pS){
   return subunits.count( pS -> getId() ); //returns 1 when true and 0 when false
 }
 
-void Structure::Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra) //joiner to strukturer sammen
+//Joins a abseloute Reference point to a sub unit.
+void Structure::Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra)
 {
   // Test at strukturen ikke er tom,
   
@@ -67,7 +72,7 @@ void Structure::Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra) //joiner to st
   }
 }
 
-//Checks if R1 and R2 is Linked
+//Checks if two abseloute reference points are Linked
 bool Structure::isLinked(AbsRefPoint& R1, AbsRefPoint& R2){
 
   string a = AbsLink(R1, R2).GetLink(); // retunere en streng "R1<=>R2"
@@ -83,7 +88,7 @@ bool Structure::isLinked(AbsRefPoint& R1, AbsRefPoint& R2){
   return false;
 }
 
-//returns a set of all neigbours to an abseloutrefencepoint
+//Returns a set of all neigbours to an abseloutrefencepoint
 set<AbsRefPoint> Structure::NeighborAbsRef( AbsRefPoint& x ){
 
   set<AbsLink>::iterator it;
@@ -124,6 +129,7 @@ set<AbsRefPoint> Structure::NeighborAbsRef( AbsRefPoint& x ){
 
 }
 
+//Returns a path between two abseloute reference points
 vector<AbsRefPoint> Structure::searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J){
   vector<AbsRefPoint> path; //empty path
 
@@ -215,6 +221,7 @@ bool Structure::refLinkedToSubUnit(AbsRefPoint& I, SubunitID sid){
   return false;
 }
 
+//Returns a path between from a sub unit to an abseloute referencepoint.
 vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
   vector<AbsRefPoint> path; 
 
@@ -276,13 +283,13 @@ vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
   return path;                                                          // return path subunit-> A-> ...-> B-> I
 }
 
-//returns the oppisite path than searchSubunit2ref
+//returns the path from an abseloute reference point to a sub unit. 
 vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint& I, SubunitID sid){
   vector<AbsRefPoint> path;
-  vector<AbsRefPoint> oppisitepath =searchSubUnit2Ref( I , sid );
+  vector<AbsRefPoint> oppisitepath = searchSubUnit2Ref( I , sid );
   vector<AbsRefPoint>::iterator it = oppisitepath.end() - 1;
 
-  for(it; it <= oppisitepath.begin(); it--){ 
+  for(it; it >= oppisitepath.begin(); it--){ 
     path.push_back( *it );
   }
   return path;
@@ -301,6 +308,7 @@ bool Structure::subUnitLinkedToSubUnit(SubunitID sid1 , SubunitID sid2 ){
 
   set<RelRefPoint>::iterator it1;                                                    
   set<RelRefPoint>::iterator it2;
+
   for( it1 = relrefset1.begin(); it1 != relrefset1.end(); it1++ ){
    
     AbsRefPoint abs1 = AbsRefPoint( sid1 , *it1 );
@@ -309,6 +317,7 @@ bool Structure::subUnitLinkedToSubUnit(SubunitID sid1 , SubunitID sid2 ){
 
     AbsRefPoint abs2 = AbsRefPoint( sid2 , *it2 );
     if(isLinked( abs1 , abs2 )) return true;
+
     }
   }
   return false;
@@ -372,18 +381,19 @@ vector<AbsRefPoint> Structure::searchSubUnit2SubUnit( SubunitID sid1, SubunitID 
   if( x.GetsubID() == sid1 ){
 
     map<AbsRefPoint, AbsRefPoint>::iterator it = parent.find( x );      //finds x which is the first refence point that hit the subunit
-    bool subUnitTouched = false; 
 
-  while( it -> first.GetsubID() != sid1 && subUnitTouched)                                           //Stops before I
+    while( it -> second.GetsubID() != sid2)                                           //Stops before I
     {
       path.push_back( it -> first );
       it = parent.find( it -> second  );
-      if( it -> first.GetsubID() == sid1) subUnitTouched = true;
     }
+    path.push_back( it -> first);
+    path.push_back( it -> second);
   }
   return path;
 }
 
+/*
 AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder pa th mellem to reference points og laver en liste med den path
 {
    AbsoluteReferencePointList *arpl=new AbsoluteReferencePointList();
@@ -393,6 +403,7 @@ AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder
    
    return arpl;
 }
+*/
 
 ex Structure::getAbstractFormFactor()                              
 // Returns  F_p1(q)+F_p2(q)+2*A_p1(q)*A_p2(q)
