@@ -96,6 +96,12 @@ public:
     }
 
     AbsoluteReferencePointList* FindPath(AbsLink &L);           // er ikke defineret endnu
+    
+    ex getPhaseFactor( vector<AbsRefPoint> path );
+    ex getAbstractPhaseFactor( vector<AbsRefPoint> path);
+
+    ex getFormFactorAmplitude( vector<AbsRefPoint> path);
+    ex getAbsractFormFactorAmplitude( vector<AbsRefPoint> path);
 
     ex getAbstractFormFactor();                                 // returner den abstracte formfactor af strukturen <============== bør det ikke være virtual?
     ex getFormFactor();                                         // returnerer form factoren af strukturen

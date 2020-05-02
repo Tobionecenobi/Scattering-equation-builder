@@ -405,6 +405,34 @@ AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder
 }
 */
 
+ex Structure::getPhaseFactor( vector<AbsRefPoint> path){
+  ex PSI = 1; 
+  vector<AbsRefPoint>::iterator i; 
+  for( i = path.begin(); i < (path.end() - 1) ; i++){
+    if(!isLinked( *i, *(i + 1) )){
+      auto s = StoredSubUnits.find(i -> GetsubID());
+      RelLink r(  i -> GetrefID() , (i + 1)  -> GetrefID() ); 
+      ex PSIrel = s -> second -> getPhaseFactor( r , s -> first );
+      PSI = PSI * PSIrel;
+    }
+  }
+  return PSI;
+}
+
+ex Structure::getAbstractPhaseFactor( vector<AbsRefPoint> path){
+  ex PSIA = 1;
+   vector<AbsRefPoint>::iterator i; 
+  for( i = path.begin(); i < (path.end() - 1) ; i++){
+    if(!isLinked( *i, *(i + 1) )){
+      auto s = StoredSubUnits.find(i -> GetsubID());
+      symbol PSI("PSI"), I_sym(i -> GetrefID()), J_sym( (i + 1) ->GetrefID() ), sid_sym( i -> GetsubID() );
+      idx I(I_sym, 1), J(J_sym, 1), sid(sid_sym, 1);
+      PSIA = PSIA * indexed(PSI, sid, I, J);
+    }
+  }
+  return PSIA;  
+}
+
 ex Structure::getAbstractFormFactor()                              
 // Returns  F_p1(q)+F_p2(q)+2*A_p1(q)*A_p2(q)
 {

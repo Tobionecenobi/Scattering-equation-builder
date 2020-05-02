@@ -120,11 +120,12 @@ class RelLink: public pair<RelRefPoint,RelRefPoint>                             
             }
      }
   
-    string GetLink() { return first+"<=>"+second; }                                     //returnerer relLinks som en streng          
+    string GetLink() const { return first+"<=>"+second; }                                     //returnerer relLinks som en streng          
     bool operator <(RelLink &b) { return GetLink()<b.GetLink(); }                       //forklarer boolean hvordan man sammenligner to links
 };
 
 inline bool operator<(RelLink &R1, RelLink &R2) { return R1.GetLink()<R2.GetLink(); }
+inline bool operator<(const RelLink &R1, const RelLink &R2) { return R1.GetLink()<R2.GetLink(); }
 
 
 #endif

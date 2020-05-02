@@ -57,7 +57,7 @@ public:
     
     virtual ex getFormFactor()                              { return FormFactor; }
     virtual ex getAmplitudeFactor(RelRefPoint &R)           { return FormFactorAmplitudes[R]; }  // Check R and L exists in maps
-    virtual ex getPhaseFactor(RelLink &L)                   { return PhaseFactors[L]; }
+    virtual ex getPhaseFactor(RelLink &L , SubunitID s)     { return PhaseFactors[L]; }
 
 /*
 //Gets formfactor of subunit object
