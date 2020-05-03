@@ -406,45 +406,118 @@ AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder
 */
 
 ex Structure::getPhaseFactor( vector<AbsRefPoint> path){
-  ex PSI = 1; 
+  ex PSIeq = 1; 
   vector<AbsRefPoint>::iterator i; 
   for( i = path.begin(); i < (path.end() - 1) ; i++){
     if(!isLinked( *i, *(i + 1) )){
       auto s = StoredSubUnits.find(i -> GetsubID());
       RelLink r(  i -> GetrefID() , (i + 1)  -> GetrefID() ); 
       ex PSIrel = s -> second -> getPhaseFactor( r , s -> first );
-      PSI = PSI * PSIrel;
+      PSIeq = PSIeq * PSIrel;
     }
   }
-  return PSI;
+  return PSIeq;
 }
 
 ex Structure::getAbstractPhaseFactor( vector<AbsRefPoint> path){
   ex PSIA = 1;
    vector<AbsRefPoint>::iterator i; 
-  for( i = path.begin(); i < (path.end() - 1) ; i++){
-    if(!isLinked( *i, *(i + 1) )){
+  for( i = path.begin(); i < path.end() - 1; i++){
+    if( !isLinked( *(i), *(i+1) ) ){
       auto s = StoredSubUnits.find(i -> GetsubID());
-      symbol PSI("PSI"), I_sym(i -> GetrefID()), J_sym( (i + 1) ->GetrefID() ), sid_sym( i -> GetsubID() );
+      symbol PSI("PSI"), I_sym((i + 1) -> GetrefID()), J_sym( i -> GetrefID() ), sid_sym( i -> GetsubID() );
       idx I(I_sym, 1), J(J_sym, 1), sid(sid_sym, 1);
       PSIA = PSIA * indexed(PSI, sid, I, J);
     }
   }
-  return PSIA;  
+  return PSIA;
 }
 
-ex Structure::getAbstractFormFactor()                              
-// Returns  F_p1(q)+F_p2(q)+2*A_p1(q)*A_p2(q)
-{
-  ex F;
-  return F;
+ex Structure::getFormFactorAmplitude( AbsRefPoint &absref ){
+  map<SubunitID , SubUnit * >::iterator i;
+  ex Aeq = 0;
+  for ( i = StoredSubUnits.begin(); i != StoredSubUnits.end(); i++){
+    vector<AbsRefPoint> path = searchRef2SubUnit( absref, i -> first);
+    ex PSI = getPhaseFactor( path ); 
+    RelRefPoint r( path.end() -> GetrefID() );
+    ex Arefend = i -> second -> getAmplitudeFactor( r );
+    Aeq = Aeq + PSI*Arefend; 
+  }
+  return Aeq;
 }
 
-ex Structure::getFormFactor()
-// Returns long complicated expression..
-{
-  ex F;
-  return F;
+ex Structure::getAbsractFormFactorAmplitude( AbsRefPoint &absref){
+  map<SubunitID, SubUnit*>::iterator imap;
+  ex AA = 1;
+  for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
+    vector<AbsRefPoint> path = searchRef2SubUnit( absref, imap -> first);
+    ex PSIA = getAbstractPhaseFactor( path );
+    symbol A("A"), I_sym( path.end() -> GetrefID()), s_sym( path.end() -> GetsubID() );
+    idx I(I_sym, 1), s(s_sym, 1);
+    AA = AA + PSIA*indexed( A , s , I);
+  }
+  return AA;
+}
+
+ex Structure::getFormFactor(){
+  
+  ex Feq = 0;
+  map<SubunitID, SubUnit*>::iterator imap;
+  map<SubunitID, SubUnit*>::iterator jmap;
+
+  for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
+    Feq = Feq + imap -> second -> getFormFactor();
+  }
+
+  ex Fi = 0;
+
+  for(imap = StoredSubUnits.begin(); imap != StoredSubUnits.begin(); imap++){
+    for(jmap = imap++; jmap != StoredSubUnits.begin(); jmap++ ){
+      
+      vector<AbsRefPoint> path = searchSubUnit2SubUnit( imap -> first , jmap -> first);
+      
+      AbsRefPoint start = *path.begin();
+      AbsRefPoint end = *path.end();
+
+      ex Astart = getFormFactorAmplitude( start );
+      ex Aend = getFormFactorAmplitude( end );
+      ex PSImid = getPhaseFactor( path );
+      Fi = Fi + Astart * PSImid * Aend;
+    }
+  }
+
+  return Feq + 2 * Fi;
+}
+ 
+ex Structure::getAbstractFormFactor(){
+  
+  ex FA = 0;
+  map<SubunitID, SubUnit*>::iterator imap;
+  map<SubunitID, SubUnit*>::iterator jmap;
+
+  for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
+    symbol F("F"), s_sym( imap -> first);
+    idx s(s_sym, 1 );
+    FA = FA + indexed( F , s );
+  }
+
+  ex Fi = 0;
+
+  for(imap = StoredSubUnits.begin(); imap != StoredSubUnits.begin(); imap++){
+    for(jmap = imap++; jmap != StoredSubUnits.begin(); jmap++ ){
+      
+      vector<AbsRefPoint> path = searchSubUnit2SubUnit( imap -> first , jmap -> first);
+      
+      AbsRefPoint start = *path.begin();
+      AbsRefPoint end = *path.end();
+
+      ex Astart = getAbsractFormFactorAmplitude( start );
+      ex Aend = getAbsractFormFactorAmplitude( end );
+      ex PSImid = getAbstractPhaseFactor( path );
+      Fi = Fi + Astart * PSImid * Aend;
+    }
+  }
+  return FA + 2 * Fi;
 }
 /*
 

@@ -78,7 +78,7 @@ int main()
    cout << "\n" <<"The form factors are" << "\n";
 
 
-   cout << S.getFormFactor() << "\n";
+   cout << S.getAbstractFormFactor() << "\n";
    cout << s1.getFormFactor() << "\n";
    cout << s2.getFormFactor() << "\n";                            //giver formfaktoren for p1 p2 og strukturen S
 
