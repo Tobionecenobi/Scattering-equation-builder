@@ -292,6 +292,8 @@ vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint &I, SubunitID sid){
 
   vector<AbsRefPoint> oppisitepath = searchSubUnit2Ref( I , sid );
 
+  if( path.empty() ) return path; 
+
   vector<AbsRefPoint>::iterator it;
 
   for(it = oppisitepath.end() - 1 ; it >= oppisitepath.begin(); it--){ 
@@ -536,7 +538,8 @@ ex Structure::getAbstractFormFactor(){
       
       if( !path.empty() ){
         AbsRefPoint start = *path.begin();
-        AbsRefPoint end = *path.end();
+        cout << start.GetAbsRefPoint() << "\n";
+        AbsRefPoint end = *(path.end() - 1);
 
         ex Astart = getAbsractFormFactorAmplitude( start );
         ex Aend = getAbsractFormFactorAmplitude( end );
