@@ -86,6 +86,15 @@ int main()
 
    cout << "\n \n" <<"The form factors are" << "\n";
    cout << S.getAbstractFormFactor() << "\n";
-   cout << s1.getFormFactor( s1.getId() ) << "\n";
-   cout << s2.getFormFactor( s2.getId() ) << "\n";                            //giver formfaktoren for p1 p2 og strukturen S
+
+   cout << "\n \n" <<"Some of the factors of s1 are" << "\n";
+   cout << s1.getFormFactor( ) << "\n";
+   
+   /*
+   RelRefPoint relpoint1( s1.getRelRefSet() find("end1"));
+   cout << s1.getFormFactorAmplitude( relpoint1 , s1.getId() ) << "\n";                            //giver formfaktoren for p1 p2 og strukturen S
+   RelRefPoint relpoint2(s1.getRelRefSet() -> find("end4"));
+   RelLink rel(relpoint1, relpoint2);
+   cout << s1.getPhaseFactor( rel, s1.getId() ) << "\n";
+   */
 };

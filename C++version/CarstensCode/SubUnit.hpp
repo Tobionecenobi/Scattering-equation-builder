@@ -55,9 +55,9 @@ public:
     virtual TypeID                    getType() { return type; }            //returner typen af subunit vi har
     virtual RelativeReferencePointSet getRelRefSet() { return RefPoints; }  //returner relativerefpoints
     
-    virtual ex getFormFactor( SubUnit sid )                         { return FormFactor; }
-    virtual ex getFormFactorAmplitude(RelRefPoint &R, SubunitID s)  { return FormFactorAmplitudes[R]; }  // Check R and L exists in maps
-    virtual ex getPhaseFactor(RelLink &L , SubunitID s)             { return PhaseFactors[L]; }
+    virtual ex getFormFactor( )                          { return FormFactor; }
+    virtual ex getFormFactorAmplitude( RelRefPoint &R)   { return FormFactorAmplitudes[R]; }  // Check R and L exists in maps
+    virtual ex getPhaseFactor(RelLink &L )                { return PhaseFactors[L]; }
 
 /*
 //Gets formfactor of subunit object

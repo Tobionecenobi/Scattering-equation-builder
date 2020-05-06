@@ -424,7 +424,7 @@ ex Structure::getPhaseFactor( vector<AbsRefPoint> path){
       
       auto s = StoredSubUnits.find(i -> GetsubID());
       RelLink r(  i -> GetrefID() , (i + 1)  -> GetrefID() ); 
-      ex PSIrel = s -> second -> getPhaseFactor( r , s -> first );
+      ex PSIrel = s -> second -> getPhaseFactor( r );
       PSIeq = PSIeq * PSIrel;
 
     }
@@ -458,7 +458,7 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref ){
     ex PSI = getPhaseFactor( path ); 
 
     RelRefPoint r( path.end() -> GetrefID() );
-    ex Arefend = i -> second -> getFormFactorAmplitude( r , i -> first );
+    ex Arefend = i -> second -> getFormFactorAmplitude( r );
     Aeq = Aeq + PSI*Arefend; 
   }
   return Aeq;
@@ -496,7 +496,7 @@ ex Structure::getFormFactor(){
   map<SubunitID, SubUnit*>::iterator jmap;
 
   for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
-    Feq = Feq + imap -> second -> getFormFactor( imap -> first );
+    Feq = Feq + imap -> second -> getFormFactor( );
   }
 
   ex Fi = 0;

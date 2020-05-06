@@ -28,11 +28,15 @@ This is a concrete polymer class, which produce expressions that can be evaluate
     GeneralSubUnit( SubunitID sid, int numOfRefPoints ) : SubUnit(sid)               //GeneralSubUnit 
     {
         type = ABSTRACT;                                                             //hvilken type distribution den bruger
+        id = sid;
 
         for(int i = 1; i <= numOfRefPoints; i++){
             AddReferencePoint( RelRefPoint( "end" + to_string( i ) ) );              //adder reference point end + #i til objectet
         }    
                                         
+        
+
+
 
         symbol F("F");                                                               //definere symbol q
         symbol A("A");
@@ -65,25 +69,25 @@ This is a concrete polymer class, which produce expressions that can be evaluate
 // more       
     }
 
-    ex getPhaseFactor( RelLink &r, SubunitID sid ){
+    ex getPhaseFactor( RelLink &r ){
         if( r.first == r.second ){
             return PhaseFactors[ RelLink( r.first , r.second )  ] = 1.0;
         }
         else{
-            symbol PSI("PSI"), i_sym( r.first ), j_sym( r.second ), s_sym( sid );
+            symbol PSI("PSI"), i_sym( r.first ), j_sym( r.second ), s_sym( id );
             idx i(i_sym, 1), j(j_sym, 1), s(s_sym, 1);
             return PhaseFactors[ RelLink(r.first , r.second) ] = indexed(PSI, s, i, j);
         }
     }    
 
-    ex getFormFactorAmplitude( RelRefPoint &ref, SubunitID sid){
-        symbol A("A"), i_sym( ref ), s_sym( sid );                             
+    ex getFormFactorAmplitude( RelRefPoint &ref){
+        symbol A("A"), i_sym( ref ), s_sym( id );                             
         idx i(i_sym, 1), s(s_sym, 1);
         return FormFactorAmplitudes[ref] = indexed( A, s, i);
     }
 
-    ex getFormFactor( SubunitID sid ){
-        symbol F("F"), s_sym( sid );
+    ex getFormFactor(){
+        symbol F("F"), s_sym( id );
         idx s(s_sym, 1);
         return FormFactor = indexed(F, s);
     }
