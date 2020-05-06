@@ -45,9 +45,7 @@ This is a concrete polymer class, which produce expressions that can be evaluate
             idx i(i_sym, 1), S(S_sym, 1);
             FormFactorAmplitudes[ RelRefPoint("end" + to_string(n) ) ] = indexed(A, S, i);      
         }
-
-
-        /*
+        
         for(int n = 1; n <= numOfRefPoints; n++){                                    //giver phasefaktoren for end#i og end#i
             PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string(n) )  ] = 1.0;
         }
@@ -62,22 +60,33 @@ This is a concrete polymer class, which produce expressions that can be evaluate
             symbol i_sym( to_string(n) ), j_sym( to_string(n-1) ), S_sym( sid );
             idx i(i_sym, 1), j(j_sym, 1), S(S_sym, 1);
             PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string( n - 1 ) ) ] = indexed( PSI, S, i, j);     
-        }nd" + nd" + to_string( n + 1 ) )" + to_string( n + 1 ) )ring( n + 1 ) )
-        */
+        }
+        
 // more       
     }
-/*
+
     ex getPhaseFactor( RelLink &r, SubunitID sid ){
-            if( r.first == r.second ){
-                return PhaseFactors[ RelLink( r.first , r.second )  ] = 1.0;
-            }
-            else
-            symbol PSI("PSI"), i_sym( r.first ), j_sym( r.second ), s_sym( sid );
-            idx PSI(PSI, 1), i(i_sym, 1), j(j_sym, 1), s(s_sym, 1);
-            indexed( PSI, s, i, j);
-            return PhaseFactors[ r.first , r.second ]   
+        if( r.first == r.second ){
+            return PhaseFactors[ RelLink( r.first , r.second )  ] = 1.0;
         }
-*/
+        else{
+            symbol PSI("PSI"), i_sym( r.first ), j_sym( r.second ), s_sym( sid );
+            idx i(i_sym, 1), j(j_sym, 1), s(s_sym, 1);
+            return PhaseFactors[ RelLink(r.first , r.second) ] = indexed(PSI, s, i, j);
+        }
+    }    
+
+    ex getFormFactorAmplitude( RelRefPoint &ref, SubunitID sid){
+        symbol A("A"), i_sym( ref ), s_sym( sid );                             
+        idx i(i_sym, 1), s(s_sym, 1);
+        return FormFactorAmplitudes[ref] = indexed( A, s, i);
+    }
+
+    ex getFormFactor( SubunitID sid ){
+        symbol F("F"), s_sym( sid );
+        idx s(s_sym, 1);
+        return FormFactor = indexed(F, s);
+    }
 };
 
 

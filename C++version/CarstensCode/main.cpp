@@ -75,17 +75,17 @@ int main()
    S.printPath(path3);
    //--------------------------------------------------------------------------------------------------------------------------
 
-   cout << "\n \n" << "The Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
-
+   cout << "\n \n" << "The abstract Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
    cout << S.getAbstractPhaseFactor( phasepath );
 
+   cout << "\n \n" << "The Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
+   cout << S.getPhaseFactor( phasepath );   
 
    cout << "\n \n" << "The Abstract formfactor is: \n" ;
    cout << S.getAbsractFormFactorAmplitude(A);
 
    cout << "\n \n" <<"The form factors are" << "\n";
    cout << S.getAbstractFormFactor() << "\n";
-   cout << s1.getFormFactor() << "\n";
-   cout << s2.getFormFactor() << "\n";                            //giver formfaktoren for p1 p2 og strukturen S
-
-}
+   cout << s1.getFormFactor( s1.getId() ) << "\n";
+   cout << s2.getFormFactor( s2.getId() ) << "\n";                            //giver formfaktoren for p1 p2 og strukturen S
+};

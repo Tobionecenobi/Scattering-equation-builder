@@ -419,12 +419,16 @@ ex Structure::getPhaseFactor( vector<AbsRefPoint> path){
 
   vector<AbsRefPoint>::iterator i; 
   for( i = path.begin(); i < (path.end() - 1) ; i++){
+    
     if(!isLinked( *i, *(i + 1) )){
+      
       auto s = StoredSubUnits.find(i -> GetsubID());
       RelLink r(  i -> GetrefID() , (i + 1)  -> GetrefID() ); 
       ex PSIrel = s -> second -> getPhaseFactor( r , s -> first );
       PSIeq = PSIeq * PSIrel;
+
     }
+
   }
   return PSIeq;
 }
@@ -454,7 +458,7 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref ){
     ex PSI = getPhaseFactor( path ); 
 
     RelRefPoint r( path.end() -> GetrefID() );
-    ex Arefend = i -> second -> getAmplitudeFactor( r );
+    ex Arefend = i -> second -> getFormFactorAmplitude( r , i -> first );
     Aeq = Aeq + PSI*Arefend; 
   }
   return Aeq;
@@ -472,16 +476,14 @@ ex Structure::getAbsractFormFactorAmplitude( AbsRefPoint &absref){
     ex PSIA = getAbstractPhaseFactor( path );
     
     if(path.empty()){
-      symbol A("A"), I_sym( absref.GetrefID()), s_sym( absref.GetsubID() );
-      cout << "the refpoint is: " << I_sym << " the subunit is: " << s_sym << "\n";
+      symbol A("A"), BETA("BETA"), I_sym( absref.GetrefID()), s_sym( absref.GetsubID() );
       idx I(I_sym, 1), s(s_sym, 1);
-      AA = AA + PSIA*indexed( A , s , I);
+      AA = AA + PSIA*indexed(BETA, s)*indexed( A , s , I);
     }
     else{
-      symbol A("A"), I_sym( (path.end() - 1) -> GetrefID()), s_sym( (path.end() -1) -> GetsubID() );
-      cout << "the refpoint is: " << I_sym << " the subunit is: " << s_sym << "\n";
+      symbol A("A"), BETA("BETA"), I_sym( (path.end() - 1) -> GetrefID()), s_sym( (path.end() -1) -> GetsubID() );
       idx I(I_sym, 1), s(s_sym, 1);
-      AA = AA + PSIA*indexed( A , s , I);
+      AA = AA + PSIA*indexed(BETA, s)*indexed( A , s , I);
     }
   }
   return AA;
@@ -494,7 +496,7 @@ ex Structure::getFormFactor(){
   map<SubunitID, SubUnit*>::iterator jmap;
 
   for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
-    Feq = Feq + imap -> second -> getFormFactor();
+    Feq = Feq + imap -> second -> getFormFactor( imap -> first );
   }
 
   ex Fi = 0;
@@ -523,9 +525,9 @@ ex Structure::getAbstractFormFactor(){
   map<SubunitID, SubUnit*>::iterator imap;
 
   for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
-    symbol F("F"), s_sym( imap -> first);
+    symbol F("F"), BETA("BETA"), s_sym( imap -> first);
     idx s(s_sym, 1 );
-    FA = FA + indexed( F , s );
+    FA = FA + indexed(pow(BETA,2), s)*indexed( F , s );
   }
 
   ex Fi = 0;
