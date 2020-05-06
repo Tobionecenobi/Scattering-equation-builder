@@ -31,26 +31,30 @@ int main()
       cout << *i << "\n"; 
    }*/
                                                                            //printer alle stored sub units i strukturen
-   /*for(auto i = S.getStoredSubUnits().begin(); i != S.getStoredSubUnits().end(); i++ ){
+   cout << "The stored subunits are: \n";
+   map<SubunitID, SubUnit*> stsubs = S.getStoredSubUnits();
+   auto i = stsubs.begin();
+   while( i != stsubs.end() ){
       cout << i -> first << "\n";
-   }*/
+      i++;
+   }
 
    //print path from ref to ref
    //--------------------------------------------------------------------------------------------------------------------------
-   vector<AbsRefPoint> path = S.searchRef2Ref(A,B);
+   vector<AbsRefPoint> phasepath = S.searchRef2Ref(A,B);
 
    cout << "The path from (" << A.GetAbsRefPoint() << ") to (" << B.GetAbsRefPoint() << ") is:\n";
 
-   S.printPath(path);
+   S.printPath(phasepath);
    //--------------------------------------------------------------------------------------------------------------------------
 
    //prints path from sub unit to ref
    //--------------------------------------------------------------------------------------------------------------------------
-   vector<AbsRefPoint> path1 = S.searchSubUnit2Ref(A, s4.getId());
+   vector<AbsRefPoint> amplitudepath = S.searchSubUnit2Ref(A, s4.getId());
 
    cout << "\n\n The path from SubUnit (" << s4.getId() << ") to Abseloutreferencepoint (" << A.GetAbsRefPoint() << ") is:\n";
    
-   S.printPath(path1);
+   S.printPath( amplitudepath );
    //--------------------------------------------------------------------------------------------------------------------------
 
    //prints path from ref to sub unit
@@ -73,11 +77,13 @@ int main()
 
    cout << "\n \n" << "The Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
 
-   cout << S.getAbstractPhaseFactor( path1 );
-
-   cout << "\n" <<"The form factors are" << "\n";
+   cout << S.getAbstractPhaseFactor( phasepath );
 
 
+   cout << "\n \n" << "The Abstract formfactor is: \n" ;
+   cout << S.getAbsractFormFactorAmplitude(A);
+
+   cout << "\n \n" <<"The form factors are" << "\n";
    cout << S.getAbstractFormFactor() << "\n";
    cout << s1.getFormFactor() << "\n";
    cout << s2.getFormFactor() << "\n";                            //giver formfaktoren for p1 p2 og strukturen S
