@@ -75,6 +75,8 @@ public:
 
     bool subUnitLinkedToSubUnit( SubunitID sid1 , SubunitID sid2 );
 
+    AbsLink searchLink(SubunitID sid1 , SubunitID sid2 );
+
     set<AbsRefPoint> NeighborAbsRef( AbsRefPoint& x );
 
     vector<AbsRefPoint> searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J);
@@ -97,14 +99,14 @@ public:
 
     AbsoluteReferencePointList* FindPath(AbsLink &L);           // er ikke defineret endnu
     
-    ex getPhaseFactor( vector<AbsRefPoint> path );
-    ex getAbstractPhaseFactor( vector<AbsRefPoint> path);
+    ex getPhaseFactorName( AbsRefPoint a, AbsRefPoint b);
 
-    ex getFormFactorAmplitude( AbsRefPoint &absref);
-    ex getAbsractFormFactorAmplitude( AbsRefPoint &absref);
+    ex getPhaseFactor( vector<AbsRefPoint> &path, int form );
+    ex getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form );
+    
+    ex getFormFactorAmplitude( AbsRefPoint &absref, int form);
 
-    ex getAbstractFormFactor();                                 // returner den abstracte formfactor af strukturen <============== bør det ikke være virtual?
-    ex getFormFactor();                                         // returnerer form factoren af strukturen
+    ex getFormFactor( int form );                                         // returnerer form factoren af strukturen
 
 /*    
 // Return abstract expressions for tree structure. I.e. using F_id(q), A_id_ref(q), Psi_id_ref1,ref2(q) as variables. 

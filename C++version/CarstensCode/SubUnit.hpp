@@ -24,20 +24,16 @@ needed to be implemented here, since they are the same for all derived classes.
 
 //===========================================================================
 // The acutual class
+class Structure;
+
 class SubUnit {                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
 public:
 
     SubunitID id;                                                           //sætter sub unit id til at være id <==== hvordan ved vi at det er af type string???
     TypeID type;                                                            //type id fortæller hvilken slags type sub unit vi har
     
-    double excessScatteringLength;  // beta bumber we need when calculating numbers.
+    double excessScatteringLength;                                      // beta bumber we need when calculating numbers.
     int scatteres;                  // Number of scattering sites, needed for coupling to pyPRISM.
-    
-    ex FormFactor;                                                          //definere formfactoren til at være en equation
-    map<RelRefPoint,ex> FormFactorAmplitudes;                               // map: key er relrefpoint og mapper til en formfactor amplitude equation
-    map<RelLink, ex> PhaseFactors;                                          // map: key er et rellink og mapper til en fase faktor equation
-
-    RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
     
 //Subunit Constructor
     SubUnit( SubunitID sid ) : id(sid)                                      //subunit constructor der er af type abstract. dvs at man SKAL lave en constructor i den bestemte type
@@ -45,20 +41,27 @@ public:
         type=ABSTRACT;
     }
 
-    virtual void AddReferencePoint( RelRefPoint R )                         //adder reference points til en abstract subunit
-      {
-         auto ret=RefPoints.insert(R);
-         if (!ret.second) cout << "DIE Refpoint already in Refpointset";
-      }
-
     virtual SubunitID                 getId() { return id; }                //returner subunit id
     virtual TypeID                    getType() { return type; }            //returner typen af subunit vi har
-    virtual RelativeReferencePointSet getRelRefSet() { return RefPoints; }  //returner relativerefpoints
     
-    virtual ex getFormFactor( )                          { return FormFactor; }
-    virtual ex getFormFactorAmplitude( RelRefPoint &R)   { return FormFactorAmplitudes[R]; }  // Check R and L exists in maps
-    virtual ex getPhaseFactor(RelLink &L )                { return PhaseFactors[L]; }
 
+    virtual ex getFormFactor( int form = 0 ){
+        symbol F("F"), BETA("BETA" , "\\beta"), s_sym( id );
+        idx s(s_sym, 1 );
+        return indexed(pow(BETA,2), s)*indexed( F , s );
+    }
+
+    virtual ex getFormFactorAmplitude( RelRefPoint &R, int form = 0 ){
+        symbol A("A"), BETA("BETA" , "\\beta"), I_sym( R ), s_sym( id );
+        idx I(I_sym, 1), s(s_sym, 1);
+        return indexed(BETA, s)*indexed( A , s , I);
+    }
+    virtual ex getPhaseFactor( RelRefPoint &R1 , RelRefPoint &R2, int form = 0 ){
+        symbol PSI("PSI" , "\\Psi"), I_sym( R1 ), J_sym( R2 ), sid_sym( id );
+        idx I(I_sym, 1), J(J_sym, 1), sid(sid_sym, 1);
+        return indexed(PSI, sid, J, I);
+    }
+};
 /*
 //Gets formfactor of subunit object
 
@@ -76,9 +79,6 @@ public:
 // void referencePoints();
     
 */
-};
-
-
 #endif // INCLUDE_GUARD_SUBUNIT
 
 //SKAL HAVE DEN PRÆCISE SAMME STRUCTURE 

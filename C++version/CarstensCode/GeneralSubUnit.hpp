@@ -1,7 +1,7 @@
 //===========================================================================
 // Included guards
 #ifndef INCLUDE_GUARD_GENERALSUBUNIT
-#define INCLUDE_GUARD_GENERALSUBUNITq
+#define INCLUDE_GUARD_GENERALSUBUNIT
 
 //===========================================================================
 // included dependencies
@@ -19,79 +19,116 @@ using namespace std;
 // The acutual class
 class GeneralSubUnit : public SubUnit {
   
-/*
-This is a concrete polymer class, which produce expressions that can be evaluated to numbers.
-*/  
     public:
     
+    ex FormFactor;                                                          //definere formfactoren til at være en equation
+    map<RelRefPoint,ex> FormFactorAmplitudes;                               // map: key er relrefpoint og mapper til en formfactor amplitude equation
+    map< RelRefPoint ,map<RelRefPoint, ex> > PhaseFactors;                    // map: key er et rellink og mapper til en fase faktor equation
+
+    exmap local1, local2; 
+    RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
+
     //GeneralSubUnit constructor
+    GeneralSubUnit( SubunitID sid ) : SubUnit( sid ){
+        type = NONINITIALIZED;
+    }
+    
     GeneralSubUnit( SubunitID sid, int numOfRefPoints ) : SubUnit(sid)               //GeneralSubUnit 
     {
         type = ABSTRACT;                                                             //hvilken type distribution den bruger
-        id = sid;
 
         for(int i = 1; i <= numOfRefPoints; i++){
             AddReferencePoint( RelRefPoint( "end" + to_string( i ) ) );              //adder reference point end + #i til objectet
-        }    
-                                        
-        
-
-
-
-        symbol F("F");                                                               //definere symbol q
-        symbol A("A");
-        symbol PSI("PSI");                                                           //definere symbol Rg2 plus subunit id 
+        }
        
-        FormFactor = F;                                                              //giver formlen for formfactoren
+        FormFactor = SubUnit::getFormFactor();                                                              //giver formlen for formfactoren
         
-        for(int n = 1; n <= numOfRefPoints; n++){                                    //giver formfactoramplituden fra reference punkt end#i
-            symbol i_sym( to_string(n) ), S_sym( sid );                             
-            idx i(i_sym, 1), S(S_sym, 1);
-            FormFactorAmplitudes[ RelRefPoint("end" + to_string(n) ) ] = indexed(A, S, i);      
-        }
-        
-        for(int n = 1; n <= numOfRefPoints; n++){                                    //giver phasefaktoren for end#i og end#i
-            PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string(n) )  ] = 1.0;
+        set<RelRefPoint>::iterator it;
+        set<RelRefPoint>::iterator jt;
+
+        for( it = RefPoints.begin(); it != RefPoints.end(); it++){                                    //giver formfactoramplituden fra reference punkt end#i
+            RelRefPoint a = *it;
+            FormFactorAmplitudes[ *it ] = SubUnit::getFormFactorAmplitude( a );     
         }
 
-        for(int n = 1; n < numOfRefPoints; n++){                                     //giver fase faktoren for end#i end end#i+1
-            symbol i_sym( to_string(n) ), j_sym( to_string(n+1) ), S_sym( sid );     
-            idx i(i_sym, 1), j(j_sym, 1), S(S_sym, 1);
-            PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string( n + 1 ) ) ] = indexed( PSI, S, i, j);     
-        }
-
-        for(int n = numOfRefPoints; n > 1; n--){                                     //giver fase faktoren for end#i end end#i-1
-            symbol i_sym( to_string(n) ), j_sym( to_string(n-1) ), S_sym( sid );
-            idx i(i_sym, 1), j(j_sym, 1), S(S_sym, 1);
-            PhaseFactors[ RelLink( "end" + to_string(n) , "end" + to_string( n - 1 ) ) ] = indexed( PSI, S, i, j);     
+        for( it = RefPoints.begin(); it != RefPoints.begin(); it++){                                     //giver fase faktoren for end#i end end#i+1
+            for(jt = RefPoints.begin(); jt != RefPoints.begin(); jt++){
+                if( *it < *jt ){
+                RelRefPoint a = *it, b = *jt;  
+                PhaseFactors[ *it ][ *jt ] = SubUnit::getPhaseFactor( a , b );
+                }     
+            }
         }
         
 // more       
     }
 
-    ex getPhaseFactor( RelLink &r ){
-        if( r.first == r.second ){
-            return PhaseFactors[ RelLink( r.first , r.second )  ] = 1.0;
-        }
-        else{
-            symbol PSI("PSI"), i_sym( r.first ), j_sym( r.second ), s_sym( id );
-            idx i(i_sym, 1), j(j_sym, 1), s(s_sym, 1);
-            return PhaseFactors[ RelLink(r.first , r.second) ] = indexed(PSI, s, i, j);
-        }
-    }    
+    RelativeReferencePointSet getRelRefSet() { return RefPoints; }  //returner relativerefpoints
 
-    ex getFormFactorAmplitude( RelRefPoint &ref){
-        symbol A("A"), i_sym( ref ), s_sym( id );                             
-        idx i(i_sym, 1), s(s_sym, 1);
-        return FormFactorAmplitudes[ref] = indexed( A, s, i);
+    virtual void AddReferencePoint( RelRefPoint R )                         //adder reference points til en abstract subunit
+      {
+         auto ret=RefPoints.insert(R);
+         if (!ret.second) cout << "DIE Refpoint already in Refpointset";
+      }
+
+    bool has( RelRefPoint &R1 ){
+       return RefPoints.find( R1 ) != RefPoints.end();
     }
 
-    ex getFormFactor(){
-        symbol F("F"), s_sym( id );
-        idx s(s_sym, 1);
-        return FormFactor = indexed(F, s);
+    virtual ex getFormFactor( int form = 1 ){
+        if(form == 0){
+            return SubUnit::getFormFactor( form );
+        }
+        else if(form == 1){
+            return FormFactor.subs( local1 ); 
+        }
+        else if(form == 2){
+            return FormFactor.subs( local2 );
+        }   
+        throw "Wrong input in getFormFactor";
+    }
+
+    virtual ex getFormFactorAmplitude( RelRefPoint &R, int form = 1 ){
+        
+        if( ! has(R) ) throw "RelRefPoint does not exist";
+
+        if(form == 0){
+            return SubUnit::getFormFactorAmplitude( R );
+        }
+        else if( form == 1){
+            return FormFactorAmplitudes[R].subs( local1 );
+        }
+        else if( form == 2){
+            return FormFactorAmplitudes[R].subs( local2 );
+        }
+        throw "Wrong input in getFormFactorname()";
+    }
+
+    virtual ex getPhaseFactor( RelRefPoint &R1 , RelRefPoint &R2, int form = 1 ){
+        
+        if( !has(R1) || !has(R2) ) throw "RelRefPoint does not exist";
+        
+        if( R2 < R1 ){
+            RelRefPoint temp = R1;
+            R1 = R2;
+            R2 = temp;
+        }
+
+        if( form == 0 ){
+        return SubUnit::getPhaseFactor( R1, R2 );
+        }
+        else if( form == 1 ){
+            if(R1 == R2) return ex (1.0);
+            else return PhaseFactors[R1][R2].subs(local1);
+        }
+        else if( form == 2){
+            if(R1 == R2) return ex (1.0);
+            else return PhaseFactors[R1][R2].subs(local2);
+        }
+        throw "wrong form input";
+
     }
 };
 
 
-#endif // INCLUDE_GUARD_SUBUNIT
+#endif // INCLUDE_GUARD_SUBUNIT 

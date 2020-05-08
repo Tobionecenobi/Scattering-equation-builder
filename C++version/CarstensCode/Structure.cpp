@@ -88,6 +88,8 @@ bool Structure::isLinked(AbsRefPoint& R1, AbsRefPoint& R2){
   return false;
 }
 
+//Takes a list of subunits and chain them together first relative ref point and the mid 
+
 //Returns a set of all neigbours to an abseloutrefencepoint
 set<AbsRefPoint> Structure::NeighborAbsRef( AbsRefPoint& x ){
 
@@ -292,12 +294,12 @@ vector<AbsRefPoint> Structure::searchRef2SubUnit(AbsRefPoint &I, SubunitID sid){
 
   vector<AbsRefPoint> oppisitepath = searchSubUnit2Ref( I , sid );
 
-  if( path.empty() ) return path; 
+  //if( oppisitepath.empty() ) return path; 
 
-  vector<AbsRefPoint>::iterator it;
+  vector<AbsRefPoint>::reverse_iterator rit;
 
-  for(it = oppisitepath.end() - 1 ; it >= oppisitepath.begin(); it--){ 
-    path.push_back( *it );
+  for(rit = oppisitepath.rbegin() ; rit != oppisitepath.rend(); rit++){ 
+    path.push_back( *rit );
   }
   return path;
 }
@@ -328,6 +330,32 @@ bool Structure::subUnitLinkedToSubUnit(SubunitID sid1 , SubunitID sid2 ){
     }
   }
   return false;
+}
+
+AbsLink Structure::searchLink(SubunitID sid1 , SubunitID sid2 ){
+  
+  map<SubunitID , SubUnit*>::iterator itmap;                                             //Find the subunits and get its relativereference points
+  
+  itmap = StoredSubUnits.find( sid1 ); 
+  RelativeReferencePointSet relrefset1 = itmap -> second -> getRelRefSet();
+
+  itmap = StoredSubUnits.find( sid2 ); 
+  RelativeReferencePointSet relrefset2 = itmap -> second -> getRelRefSet();
+
+  set<RelRefPoint>::iterator it1;                                                    
+  set<RelRefPoint>::iterator it2;
+
+  for( it1 = relrefset1.begin(); it1 != relrefset1.end(); it1++ ){
+   
+    AbsRefPoint abs1 = AbsRefPoint( sid1 , *it1 );
+    
+    for(it2 =relrefset2.begin(); it2 != relrefset2.end(); it2++){
+
+    AbsRefPoint abs2 = AbsRefPoint( sid2 , *it2 );
+    if(isLinked( abs1 , abs2 )) return AbsLink (abs1, abs2);
+    }
+  }
+  throw "There is no two subunits there arent linked";
 }
 
 vector<AbsRefPoint> Structure::searchSubUnit2SubUnit( SubunitID sid1, SubunitID sid2){
@@ -400,7 +428,7 @@ vector<AbsRefPoint> Structure::searchSubUnit2SubUnit( SubunitID sid1, SubunitID 
   return path;
 }
 
-/*
+
 AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder pa th mellem to reference points og laver en liste med den path
 {
    AbsoluteReferencePointList *arpl=new AbsoluteReferencePointList();
@@ -410,149 +438,113 @@ AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder
    
    return arpl;
 }
-*/
 
-ex Structure::getPhaseFactor( vector<AbsRefPoint> path){
+ex Structure::getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form = 1 ){
+  
+  vector<AbsRefPoint> path = searchRef2Ref( R1 , R2 ); 
+
+  return getPhaseFactor( path, form );
+}
+
+ex Structure::getPhaseFactor( vector<AbsRefPoint> &path, int form = 1 ){
+  
+  if( form == 0) return getsymbol( PSI, id, path[0], path[path.size() - 1]); 
+  
   ex PSIeq = 1; 
 
   if(path.empty()) return PSIeq;
 
   vector<AbsRefPoint>::iterator i; 
-  for( i = path.begin(); i < (path.end() - 1) ; i++){
+  for( i = path.begin(); i != (path.end() - 1) ; i++){
     
     if(!isLinked( *i, *(i + 1) )){
       
-      auto s = StoredSubUnits.find(i -> GetsubID());
-      RelLink r(  i -> GetrefID() , (i + 1)  -> GetrefID() ); 
-      ex PSIrel = s -> second -> getPhaseFactor( r );
+      auto s = StoredSubUnits.find(i -> GetsubID()); 
+      RelRefPoint a(i -> GetrefID());
+      RelRefPoint b((i + 1) -> GetrefID());
+      ex PSIrel = s -> second -> getPhaseFactor( a, b, form - 1 );
       PSIeq = PSIeq * PSIrel;
-
     }
-
   }
   return PSIeq;
 }
 
-ex Structure::getAbstractPhaseFactor( vector<AbsRefPoint> path){
-  ex PSIA = 1;
-  if( path.empty() ) return PSIA;
-   vector<AbsRefPoint>::iterator i; 
-  for( i = path.begin(); i < path.end() - 1; i++){
-    if( !isLinked( *(i), *(i+1) ) ){
-      auto s = StoredSubUnits.find(i -> GetsubID());
-      symbol PSI("PSI"), I_sym((i + 1) -> GetrefID()), J_sym( i -> GetrefID() ), sid_sym( i -> GetsubID() );
-      idx I(I_sym, 1), J(J_sym, 1), sid(sid_sym, 1);
-      PSIA = PSIA * indexed(PSI, sid, I, J);
-    }
-  }
-  return PSIA;
-}
-
-ex Structure::getFormFactorAmplitude( AbsRefPoint &absref ){
+ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
   
+  if( form == 0 ) return getsymbol( A, id, absref); 
+
   map<SubunitID , SubUnit * >::iterator i;
   ex Aeq = 0;
 
   for ( i = StoredSubUnits.begin(); i != StoredSubUnits.end(); i++){
+    
     vector<AbsRefPoint> path = searchRef2SubUnit( absref, i -> first);
-    ex PSI = getPhaseFactor( path ); 
 
-    RelRefPoint r( path.end() -> GetrefID() );
-    ex Arefend = i -> second -> getFormFactorAmplitude( r );
-    Aeq = Aeq + PSI*Arefend; 
+    if( path.empty() ){
+      ex Arefend = getFormFactorAmplitude(absref.GetrefID, form - 1);
+      Aeq = Aeq + Arefend;
+    }
+    else{
+      ex PSI = getPhaseFactor( path, form); // Jeg er ikke sikker på om form skal være med - 1
+      RelRefPoint r( path.end() -> GetrefID() );
+      ex Arefend = i -> second -> getFormFactorAmplitude( r , form - 1 );
+      Aeq = Aeq + PSI*Arefend; 
+    }
   }
   return Aeq;
 }
 
-ex Structure::getAbsractFormFactorAmplitude( AbsRefPoint &absref){
+ex Structure::getFormFactor( int form = 1 ){
   
-  map<SubunitID, SubUnit*>::iterator imap;
-  ex AA = 0;
+  if( form == 0) return getsymbol(F, id);
 
-  map<SubunitID, SubUnit* > storedSubs = getStoredSubUnits();
-
-  for( imap = storedSubs.begin(); imap != storedSubs.end(); imap++){
-    vector<AbsRefPoint> path = searchRef2SubUnit( absref , imap -> first );
-    ex PSIA = getAbstractPhaseFactor( path );
-    
-    if(path.empty()){
-      symbol A("A"), BETA("BETA"), I_sym( absref.GetrefID()), s_sym( absref.GetsubID() );
-      idx I(I_sym, 1), s(s_sym, 1);
-      AA = AA + PSIA*indexed(BETA, s)*indexed( A , s , I);
-    }
-    else{
-      symbol A("A"), BETA("BETA"), I_sym( (path.end() - 1) -> GetrefID()), s_sym( (path.end() -1) -> GetsubID() );
-      idx I(I_sym, 1), s(s_sym, 1);
-      AA = AA + PSIA*indexed(BETA, s)*indexed( A , s , I);
-    }
-  }
-  return AA;
-}
-
-ex Structure::getFormFactor(){
-  
   ex Feq = 0;
   map<SubunitID, SubUnit*>::iterator imap;
+  map<SubunitID, SubUnit*>::iterator imapnext;
   map<SubunitID, SubUnit*>::iterator jmap;
 
   for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
-    Feq = Feq + imap -> second -> getFormFactor( );
+    Feq = Feq + imap -> second -> getFormFactor( form - 1 );
   }
 
   ex Fi = 0;
 
   for(imap = StoredSubUnits.begin(); imap != StoredSubUnits.begin(); imap++){
-    for(jmap = imap++; jmap != StoredSubUnits.begin(); jmap++ ){
-      
-      vector<AbsRefPoint> path = searchSubUnit2SubUnit( imap -> first , jmap -> first);
-      
-      AbsRefPoint start = *path.begin();
-      AbsRefPoint end = *path.end();
+    
+    imapnext = imap;
+    imapnext++; 
 
-      ex Astart = getFormFactorAmplitude( start );
-      ex Aend = getFormFactorAmplitude( end );
-      ex PSImid = getPhaseFactor( path );
-      Fi = Fi + Astart * PSImid * Aend;
-    }
-  }
-
-  return Feq + 2 * Fi;
-}
- 
-ex Structure::getAbstractFormFactor(){
-  
-  ex FA = 0;
-  map<SubunitID, SubUnit*>::iterator imap;
-
-  for( imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
-    symbol F("F"), BETA("BETA"), s_sym( imap -> first);
-    idx s(s_sym, 1 );
-    FA = FA + indexed(pow(BETA,2), s)*indexed( F , s );
-  }
-
-  ex Fi = 0;
-  map<SubunitID, SubUnit*>::iterator jmap;
-
-  for(imap = StoredSubUnits.begin(); imap != StoredSubUnits.end(); imap++){
-    for(jmap = imap++; jmap != StoredSubUnits.end(); jmap++ ){
+    for(jmap = imapnext; jmap != StoredSubUnits.begin(); jmap++ ){
       
       vector<AbsRefPoint> path = searchSubUnit2SubUnit( imap -> first , jmap -> first);
       
       if( !path.empty() ){
+        
         AbsRefPoint start = *path.begin();
-        cout << start.GetAbsRefPoint() << "\n";
         AbsRefPoint end = *(path.end() - 1);
 
-        ex Astart = getAbsractFormFactorAmplitude( start );
-        ex Aend = getAbsractFormFactorAmplitude( end );
-      
-        ex PSImid = getAbstractPhaseFactor( path );
+        ex Astart = getFormFactorAmplitude( start , form );
+        ex Aend = getFormFactorAmplitude( end , form );
+        ex PSImid = getPhaseFactor( path , form );
+
         Fi = Fi + Astart * PSImid * Aend;
+      }
+      else{
+        AbsLink linkedpath = searchLink( imap ->first, jmap -> first );
+        AbsRefPoint start = linkedpath.first;
+        AbsRefPoint end = linkedpath.second;
+
+        ex Astart = getFormFactorAmplitude( start , form );
+        ex Aend = getFormFactorAmplitude( end , form );
+        
+        Fi = Fi + Astart * Aend;
       }
     }
   }
-  return FA + 2 * Fi;
+  return Feq + 2 * Fi;
 }
+ 
+
 /*
 
 

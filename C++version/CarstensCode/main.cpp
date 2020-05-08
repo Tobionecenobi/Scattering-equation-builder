@@ -1,6 +1,7 @@
 #include "Structure.hpp"
 #include "RWPolymer.hpp"
 #include "GeneralSubUnit.hpp"
+#include "Struct2Sub.hpp"
 
 int main()
 {
@@ -75,21 +76,30 @@ int main()
    S.printPath(path3);
    //--------------------------------------------------------------------------------------------------------------------------
 
+   //uncomment to get everything in latex format
+   cout << latex;
+
    cout << "\n \n" << "The abstract Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
-   cout << S.getAbstractPhaseFactor( phasepath );
+   cout << S.getPhaseFactorName(A, B) << "=" <<S.getAbstractPhaseFactor( phasepath );
 
    cout << "\n \n" << "The Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
    cout << S.getPhaseFactor( phasepath );   
 
-   cout << "\n \n" << "The Abstract formfactor is: \n" ;
+   cout << "\n \n" << "The Abstract Amplitude form factor is: \n" ;
    cout << S.getAbsractFormFactorAmplitude(A);
 
    cout << "\n \n" <<"The form factors are" << "\n";
    cout << S.getAbstractFormFactor() << "\n";
 
    cout << "\n \n" <<"Some of the factors of s1 are" << "\n";
-   cout << s1.getFormFactor( ) << "\n";
+   cout << s1.getFormFactor( 0 ) << "\n";
    
+   cout << "\n \n The structure is now convertet to a sub unit called str: \n";
+   Struct2Sub str("oncestructure", S, ABSTRACT );
+
+   cout << "\n \n" <<"Some of the factors of str are" << "\n";
+   cout << str.subUnitFormFactor() << "\n";
+
    /*
    RelRefPoint relpoint1( s1.getRelRefSet() find("end1"));
    cout << s1.getFormFactorAmplitude( relpoint1 , s1.getId() ) << "\n";                            //giver formfaktoren for p1 p2 og strukturen S
