@@ -26,8 +26,9 @@ class GeneralSubUnit : public SubUnit {
     map< RelRefPoint ,map<RelRefPoint, ex> > PhaseFactors;                    // map: key er et rellink og mapper til en fase faktor equation
 
     exmap local1, local2; 
-    RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
-
+    /*RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
+    */ //RYKKET TILBAGE TIL SUBUNIT FORDI ELLERS KAN EN SUBUNIT IKKE TJEKKE SINE REFERENCE PUNKTER IGENNEM
+    
     //GeneralSubUnit constructor
     GeneralSubUnit( SubunitID sid ) : SubUnit( sid ){
         type = NONINITIALIZED;
@@ -63,13 +64,14 @@ class GeneralSubUnit : public SubUnit {
 // more       
     }
 
-    RelativeReferencePointSet getRelRefSet() { return RefPoints; }  //returner relativerefpoints
+    /*RelativeReferencePointSet getRelRefSet() { return RefPoints; }  //returner relativerefpoints
 
     virtual void AddReferencePoint( RelRefPoint R )                         //adder reference points til en abstract subunit
       {
          auto ret=RefPoints.insert(R);
          if (!ret.second) cout << "DIE Refpoint already in Refpointset";
       }
+    */ // RYKKET TILBAGE TIL SUBUNIT FORDI ELLERS KAN EN SUBUNIT IKKE TJEKKE SINE REFERENCE PUNKTER IGENNEM
 
     bool has( RelRefPoint &R1 ){
        return RefPoints.find( R1 ) != RefPoints.end();

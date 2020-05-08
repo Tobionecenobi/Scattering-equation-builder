@@ -536,7 +536,7 @@ ex Structure::getFormFactor( int form = 1 ){
 
         ex Astart = getFormFactorAmplitude( start , form );
         ex Aend = getFormFactorAmplitude( end , form );
-        
+
         Fi = Fi + Astart * Aend;
       }
     }
