@@ -17,6 +17,7 @@ using namespace std;
 
 #include "RefPoint.hpp"
 #include "SubUnit.hpp"
+#include "SymbolInterface.hpp"
 
 //===========================================================================
 // The acutual class
@@ -24,10 +25,16 @@ using namespace std;
 typedef set<SubunitID> SubunitSet;
 class SubUnit;
 
-class Structure {                                               //struktur klassen ser ud til at det er vores base class
+class Structure : public SymbolInterface{                                               //struktur klassen ser ud til at det er vores base class
 public:
     StructureID id;                                             //strukturen har en struktur id
     SubunitSet subunits;                                        //strukturen har et set subunits
+
+    symbol PSI = getSymbol( "PSI", "\\Psi");
+    symbol BETA = getSymbol( "BETA", "\\beta");
+    symbol A = getSymbol("A");
+    symbol F = getSymbol("F");
+    symbol ID = getSymbol( id );
 
 // En struktur har brug for at vide alle de subunit IDer den indeholder er unikke. Derfor dette set.    
     

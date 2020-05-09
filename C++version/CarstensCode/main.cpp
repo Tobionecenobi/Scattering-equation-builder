@@ -80,25 +80,25 @@ int main()
    cout << latex;
 
    cout << "\n \n" << "The abstract Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
-   cout << S.getPhaseFactorName(A, B) << "=" <<S.getAbstractPhaseFactor( phasepath );
+   cout << S.getPhaseFactor(A, B, 0) << "=" << S.getPhaseFactor( phasepath, 1 );
 
    cout << "\n \n" << "The Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
-   cout << S.getPhaseFactor( phasepath );   
+   cout << S.getPhaseFactor( phasepath, 1 );   
 
    cout << "\n \n" << "The Abstract Amplitude form factor is: \n" ;
-   cout << S.getAbsractFormFactorAmplitude(A);
+   cout << S.getFormFactorAmplitude(A, 1);
 
    cout << "\n \n" <<"The form factors are" << "\n";
-   cout << S.getAbstractFormFactor() << "\n";
+   cout << S.getFormFactor(1) << "\n";
 
    cout << "\n \n" <<"Some of the factors of s1 are" << "\n";
    cout << s1.getFormFactor( 0 ) << "\n";
    
-   cout << "\n \n The structure is now convertet to a sub unit called str: \n";
+   /*cout << "\n \n The structure is now convertet to a sub unit called str: \n";
    Struct2Sub str("oncestructure", S, ABSTRACT );
 
    cout << "\n \n" <<"Some of the factors of str are" << "\n";
-   cout << str.subUnitFormFactor() << "\n";
+   cout << str.subUnitFormFactor() << "\n";*/
 
    /*
    RelRefPoint relpoint1( s1.getRelRefSet() find("end1"));

@@ -6,6 +6,7 @@
 //===========================================================================
 // included dependencies
 #include "SubUnit.hpp"
+#include "GeneralSubUnit.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -17,31 +18,33 @@ using namespace std;
 
 //===========================================================================
 // The acutual class
-class RWPolymer : public SubUnit {
+class RWPolymer : public GeneralSubUnit {
   
 /*
 This is a concrete polymer class, which produce expressions that can be evaluated to numbers.
 */  
      public:
 
-    RWPolymer( SubunitID sid ) : SubUnit(sid)                                       //random walk polymer nedarver fra subunit
+    RWPolymer( SubunitID sid ) : GeneralSubUnit(sid)                                       //random walk polymer nedarver fra subunit
     {
        type=GAUSSIANRANDOMWALK;                                                     //hvilken type distribution den bruger
 
        AddReferencePoint( RelRefPoint("end1") );                                    //adder reference point end1 til objectet
        AddReferencePoint( RelRefPoint("end2") );                                    //edder reference point end2 til objektet
 
-       symbol q("q");                                                               //definere symbol q
-       symbol Rg2("Rg2_"+sid);                                                      //definere symbol Rg2 plus subunit id
+       symbol q = getSymbol("q");                                                                 //definere symbol q                                                    //definere symbol Rg2 plus subunit id
+       ex Rg2 = pow(getIndex(getSymbol("R")+ getSymbol("g"), getSymbol(sid)),2);
+       symbol x = getSymbol("x");
        
-       FormFactor=2.0*(exp(-q*q*Rg2)-1.0+q*q*Rg2)/(pow(q,4)*Rg2*Rg2);               //giver formlen for formfactoren
+       local1[x] = getIndex(x, getSymbol(sid));
+       local2[x] = pow(q,2)*Rg2;
 
-       FormFactorAmplitudes[ RelRefPoint("end1") ] = (exp(-q*q*Rg2)-1)/(q*q*Rg2);   //giver formfactoramplituden fra reference punkt end1
-       FormFactorAmplitudes[ RelRefPoint("end2") ] = (exp(-q*q*Rg2)-1)/(q*q*Rg2);   //giver formfactoramplituden fra reference punkt end1
+       FormFactor=2.0*(exp(-x)-1.0+x)/(pow(x,2));                       //giver formlen for formfactoren
 
-       PhaseFactors[ RelLink( "end1", "end1") ] = 1.0;                              //giver fase faktoren for end1 end1
-       PhaseFactors[ RelLink( "end2", "end2") ] = 1.0;                              //giver fase faktoren for end2 end2
-       PhaseFactors[ RelLink( "end1", "end2") ] = exp(-q*q*Rg2) ;                   //giver fase faktoren for end1 end2 <====== 
+       FormFactorAmplitudes[ RelRefPoint("end1") ] = (exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
+       FormFactorAmplitudes[ RelRefPoint("end2") ] = (exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
+
+       PhaseFactors["end1"]["end2"] = exp(-x) ;                         //giver fase faktoren for end1 end2 <====== 
 
 // more       
     }

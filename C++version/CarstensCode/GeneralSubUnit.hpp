@@ -25,10 +25,11 @@ class GeneralSubUnit : public SubUnit {
     map<RelRefPoint,ex> FormFactorAmplitudes;                               // map: key er relrefpoint og mapper til en formfactor amplitude equation
     map< RelRefPoint ,map<RelRefPoint, ex> > PhaseFactors;                    // map: key er et rellink og mapper til en fase faktor equation
 
+
     exmap local1, local2; 
     /*RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
     */ //RYKKET TILBAGE TIL SUBUNIT FORDI ELLERS KAN EN SUBUNIT IKKE TJEKKE SINE REFERENCE PUNKTER IGENNEM
-    
+
     //GeneralSubUnit constructor
     GeneralSubUnit( SubunitID sid ) : SubUnit( sid ){
         type = NONINITIALIZED;

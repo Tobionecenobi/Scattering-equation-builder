@@ -7,6 +7,7 @@
 // included dependencies
 #include "Structure.hpp"
 #include "SubTypes.hpp"
+#include "SymbolInterface.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -26,7 +27,7 @@ needed to be implemented here, since they are the same for all derived classes.
 // The acutual class
 class Structure;
 
-class SubUnit {                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
+class SubUnit : public SymbolInterface {                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
 public:
 
     SubunitID id;                                                           //sætter sub unit id til at være id <==== hvordan ved vi at det er af type string???
@@ -54,20 +55,17 @@ public:
       }
 
     virtual ex getFormFactor( int form = 0 ){
-        symbol F("F"), BETA("BETA" , "\\beta"), s_sym( id );
-        idx s(s_sym, 1 );
-        return indexed(pow(BETA,2), s)*indexed( F , s );
+        return getIndex( pow(getSymbol("BETA", "\\beta"),2), getSymbol(id) ) * getIndex( getSymbol("F"), getSymbol(id) );
     }
 
     virtual ex getFormFactorAmplitude( RelRefPoint &R, int form = 0 ){
-        symbol A("A"), BETA("BETA" , "\\beta"), I_sym( R ), s_sym( id );
-        idx I(I_sym, 1), s(s_sym, 1);
-        return indexed(BETA, s)*indexed( A , s , I);
+        return getIndex( getSymbol("BETA","\\beta"), getSymbol(id)) * getIndex( getSymbol("A"), getSymbol(id), getSymbol( R ));
     }
     virtual ex getPhaseFactor( RelRefPoint &R1 , RelRefPoint &R2, int form = 0 ){
-        symbol PSI("PSI" , "\\Psi"), I_sym( R1 ), J_sym( R2 ), sid_sym( id );
+        /*symbol PSI("PSI" , "\\Psi"), I_sym( R1 ), J_sym( R2 ), sid_sym( id );
         idx I(I_sym, 1), J(J_sym, 1), sid(sid_sym, 1);
-        return indexed(PSI, sid, J, I);
+        return indexed(PSI, sid, J, I);*/
+        return getIndex( getSymbol( "PSI", "\\Psi" ), getSymbol(id), getSymbol(R2), getSymbol(R1) );
     }
 };
 /*

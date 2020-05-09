@@ -448,7 +448,7 @@ ex Structure::getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form = 1 ){
 
 ex Structure::getPhaseFactor( vector<AbsRefPoint> &path, int form = 1 ){
   
-  if( form == 0) return getsymbol( PSI, id, path[0], path[path.size() - 1]); 
+  if( form == 0) return getIndex( PSI , ID, getSymbol( path[0].GetrefID() ), getSymbol( path[(path.size() - 1)].GetrefID() ) ); 
   
   ex PSIeq = 1; 
 
@@ -471,7 +471,7 @@ ex Structure::getPhaseFactor( vector<AbsRefPoint> &path, int form = 1 ){
 
 ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
   
-  if( form == 0 ) return getsymbol( A, id, absref); 
+  if( form == 0 ) return getIndex( A, ID, getSymbol(absref.GetrefID())); 
 
   map<SubunitID , SubUnit * >::iterator i;
   ex Aeq = 0;
@@ -481,7 +481,7 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
     vector<AbsRefPoint> path = searchRef2SubUnit( absref, i -> first);
 
     if( path.empty() ){
-      ex Arefend = getFormFactorAmplitude(absref.GetrefID, form - 1);
+      ex Arefend = getFormFactorAmplitude( absref, form - 1);
       Aeq = Aeq + Arefend;
     }
     else{
@@ -496,7 +496,7 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
 
 ex Structure::getFormFactor( int form = 1 ){
   
-  if( form == 0) return getsymbol(F, id);
+  if( form == 0) return SymbolInterface::getIndex(F, ID);
 
   ex Feq = 0;
   map<SubunitID, SubUnit*>::iterator imap;
