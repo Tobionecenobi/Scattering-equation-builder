@@ -12,7 +12,6 @@
 #include <map>
 #include <utility>
 #include <ginac/ginac.h> 
-using namespace GiNaC;
 using namespace std;
 
 //===========================================================================
@@ -30,17 +29,46 @@ class GeneralSubUnit : public SubUnit {
     /*RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
     */ //RYKKET TILBAGE TIL SUBUNIT FORDI ELLERS KAN EN SUBUNIT IKKE TJEKKE SINE REFERENCE PUNKTER IGENNEM
 
-    //GeneralSubUnit constructor
+    //GeneralSubUnit constructor that takes the sub unit ID
     GeneralSubUnit( SubunitID sid ) : SubUnit( sid ){
         type = NONINITIALIZED;
     }
-    
-    GeneralSubUnit( SubunitID sid, int numOfRefPoints ) : SubUnit(sid)               //GeneralSubUnit 
-    {
+
+    //GeneralSubUnit constructor that takes the sub Unit ID and the number of relative reference points
+    GeneralSubUnit( SubunitID sid, int numOfRefPoints ) : SubUnit(sid){               //GeneralSubUnit 
+        
         type = ABSTRACT;                                                             //hvilken type distribution den bruger
 
         for(int i = 1; i <= numOfRefPoints; i++){
             AddReferencePoint( RelRefPoint( "end" + to_string( i ) ) );              //adder reference point end + #i til objectet
+        }
+       
+        FormFactor = SubUnit::getFormFactor();                                                              //giver formlen for formfactoren
+        
+        set<RelRefPoint>::iterator it;
+        set<RelRefPoint>::iterator jt;
+
+        for( it = RefPoints.begin(); it != RefPoints.end(); it++){                                    //giver formfactoramplituden fra reference punkt end#i
+            RelRefPoint a = *it;
+            FormFactorAmplitudes[ *it ] = SubUnit::getFormFactorAmplitude( a );     
+        }
+
+        for( it = RefPoints.begin(); it != RefPoints.begin(); it++){                                     //giver fase faktoren for end#i end end#i+1
+            for(jt = RefPoints.begin(); jt != RefPoints.begin(); jt++){
+                if( *it < *jt ){
+                RelRefPoint a = *it, b = *jt;  
+                PhaseFactors[ *it ][ *jt ] = SubUnit::getPhaseFactor( a , b );
+                }     
+            }
+        }
+    }
+
+    //GeneralSubUnit constructor that takes the sub Unit ID, a list that takes each reference individual id and the number of reference points
+    GeneralSubUnit( SubunitID sid, int numOfRefPoints, vector<string> &s ) : SubUnit(sid){               //GeneralSubUnit 
+        type = ABSTRACT;                                                                                       //hvilken type distribution den bruger
+
+        for(int i = 0; i <= numOfRefPoints; i++){
+            AddReferencePoint( s[i] );                                                                          //adder reference point end + #i til objectet
         }
        
         FormFactor = SubUnit::getFormFactor();                                                              //giver formlen for formfactoren
@@ -129,7 +157,6 @@ class GeneralSubUnit : public SubUnit {
             else return PhaseFactors[R1][R2].subs(local2);
         }
         throw "wrong form input";
-
     }
 };
 

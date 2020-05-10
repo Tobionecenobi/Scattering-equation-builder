@@ -25,16 +25,10 @@ using namespace std;
 typedef set<SubunitID> SubunitSet;
 class SubUnit;
 
-class Structure : public SymbolInterface{                                               //struktur klassen ser ud til at det er vores base class
+class Structure{                                               //struktur klassen ser ud til at det er vores base class
 public:
     StructureID id;                                             //strukturen har en struktur id
     SubunitSet subunits;                                        //strukturen har et set subunits
-
-    symbol PSI = getSymbol( "PSI", "\\Psi");
-    symbol BETA = getSymbol( "BETA", "\\beta");
-    symbol A = getSymbol("A");
-    symbol F = getSymbol("F");
-    symbol ID = getSymbol( id );
 
 // En struktur har brug for at vide alle de subunit IDer den indeholder er unikke. Derfor dette set.    
     
@@ -105,8 +99,37 @@ public:
     }
 
     AbsoluteReferencePointList* FindPath(AbsLink &L);           // er ikke defineret endnu
-    
-    ex getPhaseFactorName( AbsRefPoint a, AbsRefPoint b);
+
+    //Makes a pointer to SymbolInterface class
+    SymbolInterface *GLEX = SymbolInterface::instance();
+
+    //Manual over writing of get index from class SymbolInterface
+    ex getIndex( ex e, ex e2, ex e3, ex e4, ex e5){
+        return GLEX -> getIndex(e, e2, e3, e4, e5);
+    } 
+
+    ex getIndex( ex e, ex e2, ex e3, ex e4){
+        return GLEX -> getIndex(e, e2, e3, e4);
+    }
+
+    ex getIndex( ex e, ex e2, ex e3){
+        return GLEX -> getIndex(e, e2, e3);
+    }
+
+    ex getIndex( ex e, ex e2){
+        return GLEX -> getIndex(e, e2);
+    }
+
+    //Manaul over writing of getsymbol from class SymbolInterface
+    symbol getSymbol( string s1, string latex = ""){
+        return GLEX -> getSymbol(s1, latex );
+    }
+
+    symbol BETA = getSymbol("BETA", "\\beta");
+    symbol ID = getSymbol( id );
+    symbol F = getSymbol("F");
+    symbol A = getSymbol("A");
+    symbol PSI = getSymbol("PSI", "\\Psi");
 
     ex getPhaseFactor( vector<AbsRefPoint> &path, int form );
     ex getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form );

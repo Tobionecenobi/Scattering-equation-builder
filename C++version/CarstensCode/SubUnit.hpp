@@ -5,7 +5,7 @@
 
 //===========================================================================
 // included dependencies
-#include "Structure.hpp"
+//#include "Structure.hpp"
 #include "SubTypes.hpp"
 #include "SymbolInterface.hpp"
 #include <iostream>
@@ -27,7 +27,7 @@ needed to be implemented here, since they are the same for all derived classes.
 // The acutual class
 class Structure;
 
-class SubUnit : public SymbolInterface {                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
+class SubUnit{                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
 public:
 
     SubunitID id;                                                           //sætter sub unit id til at være id <==== hvordan ved vi at det er af type string???
@@ -54,18 +54,51 @@ public:
          if (!ret.second) cout << "DIE Refpoint already in Refpointset";
       }
 
-    virtual ex getFormFactor( int form = 0 ){
-        return getIndex( pow(getSymbol("BETA", "\\beta"),2), getSymbol(id) ) * getIndex( getSymbol("F"), getSymbol(id) );
+    //Makes a pointer to SymbolInterface class
+    SymbolInterface *GLEX = SymbolInterface::instance();
+
+    //Manual over writing of get index from class SymbolInterface
+    ex getIndex( ex e, ex e2, ex e3, ex e4, ex e5){
+        return GLEX -> getIndex(e, e2, e3, e4, e5);
+    } 
+
+    ex getIndex( ex e, ex e2, ex e3, ex e4){
+        return GLEX -> getIndex(e, e2, e3, e4);
     }
 
-    virtual ex getFormFactorAmplitude( RelRefPoint &R, int form = 0 ){
-        return getIndex( getSymbol("BETA","\\beta"), getSymbol(id)) * getIndex( getSymbol("A"), getSymbol(id), getSymbol( R ));
+    ex getIndex( ex e, ex e2, ex e3){
+        return GLEX -> getIndex(e, e2, e3);
     }
+
+    ex getIndex( ex e, ex e2){
+        return GLEX -> getIndex(e, e2);
+    }
+
+    //Manaul over writing of getsymbol from class SymbolInterface
+    symbol getSymbol( string s1, string latex = ""){
+        return GLEX -> getSymbol(s1, latex );
+    }
+
+    //Define most used symbols
+    symbol BETA = getSymbol("BETA", "\\beta");
+    symbol ID = getSymbol( id );
+    symbol F = getSymbol("F");
+    symbol A = getSymbol("A");
+    symbol PSI = getSymbol("PSI", "\\Psi");
+
+    //Returns Formfactor as one symbol
+    virtual ex getFormFactor( int form = 0 ){
+        return GLEX -> getIndex( pow(BETA,2), ID ) * GLEX -> getIndex( F, ID );
+    }
+
+    //Returns form factor amplitude as one symbol
+    virtual ex getFormFactorAmplitude( RelRefPoint &R, int form = 0 ){
+        return GLEX -> getIndex(BETA, ID) * GLEX -> getIndex( A, ID, GLEX -> getSymbol( R ));
+    }
+
+    //Returns the phase factor as one symbol
     virtual ex getPhaseFactor( RelRefPoint &R1 , RelRefPoint &R2, int form = 0 ){
-        /*symbol PSI("PSI" , "\\Psi"), I_sym( R1 ), J_sym( R2 ), sid_sym( id );
-        idx I(I_sym, 1), J(J_sym, 1), sid(sid_sym, 1);
-        return indexed(PSI, sid, J, I);*/
-        return getIndex( getSymbol( "PSI", "\\Psi" ), getSymbol(id), getSymbol(R2), getSymbol(R1) );
+        return GLEX -> getIndex( PSI, ID, GLEX -> getSymbol(R2), GLEX -> getSymbol(R1) );
     }
 };
 /*

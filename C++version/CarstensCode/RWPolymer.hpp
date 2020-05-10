@@ -13,8 +13,8 @@
 #include <map>
 #include <utility>
 #include <ginac/ginac.h> 
-using namespace GiNaC;
-using namespace std;
+//using namespace GiNaC;
+//using namespace std;
 
 //===========================================================================
 // The acutual class
@@ -33,7 +33,7 @@ This is a concrete polymer class, which produce expressions that can be evaluate
        AddReferencePoint( RelRefPoint("end2") );                                    //edder reference point end2 til objektet
 
        symbol q = getSymbol("q");                                                                 //definere symbol q                                                    //definere symbol Rg2 plus subunit id
-       ex Rg2 = pow(getIndex(getSymbol("R")+ getSymbol("g"), getSymbol(sid)),2);
+       ex Rg2 = pow(getIndex(getSymbol("R"), getSymbol("g"), getSymbol(sid)),2);
        symbol x = getSymbol("x");
        
        local1[x] = getIndex(x, getSymbol(sid));

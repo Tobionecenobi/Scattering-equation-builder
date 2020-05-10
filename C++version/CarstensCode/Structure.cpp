@@ -496,7 +496,7 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
 
 ex Structure::getFormFactor( int form = 1 ){
   
-  if( form == 0) return SymbolInterface::getIndex(F, ID);
+  if( form == 0) return getIndex(F, ID);
 
   ex Feq = 0;
   map<SubunitID, SubUnit*>::iterator imap;
