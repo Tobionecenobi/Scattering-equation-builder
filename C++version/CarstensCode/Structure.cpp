@@ -533,28 +533,28 @@ ex Structure::getFormFactor( int form = 1 ){
       
       if( !path.empty() ){
         
-        AbsRefPoint start = *path.begin();
-        AbsRefPoint end = *(path.end() - 1);
+        RelRefPoint start = (path.begin()) -> GetrefID();
+        RelRefPoint end = (path.end() - 1) -> GetrefID();
 
-        ex Astart = getFormFactorAmplitude( start , form - 1);
-        ex Aend = getFormFactorAmplitude( end , form - 1);
-        ex PSImid = getPhaseFactor( path , form - 1);
+        ex Astart = imap -> second -> getFormFactorAmplitude( start , form - 1);
+        ex Aend = jmap -> second -> getFormFactorAmplitude( end , form - 1);
+        ex PSImid = imap -> second -> getPhaseFactor( start, end , form - 1);
 
         Fi = Fi + Astart * PSImid * Aend;
       }
       else{
-        AbsLink linkedpath = searchLink( imap ->first, jmap -> first );
-        AbsRefPoint start = linkedpath.first;
-        AbsRefPoint end = linkedpath.second;
+        AbsLink linkedpath = searchLink( jmap -> first, imap -> first );
+        RelRefPoint start = linkedpath.first.GetrefID();
+        RelRefPoint end = linkedpath.second.GetrefID();
 
-        ex Astart = getFormFactorAmplitude( start , form - 1);
-        ex Aend = getFormFactorAmplitude( end , form  - 1);
+        ex Astart = imap -> second -> getFormFactorAmplitude( start , form - 1);
+        ex Aend = jmap -> second -> getFormFactorAmplitude( end , form  - 1);
 
         Fi = Fi + Astart * Aend;
       }
     }
   }
-  return expand(Feq + 2 * Fi);
+  return Feq + 2 * expand(Fi);
 }
  
 
