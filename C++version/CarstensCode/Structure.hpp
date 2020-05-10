@@ -70,6 +70,12 @@ public:
 // How to handle the empty structure, where R should be "".
     void Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra);     // adder to subunits sammen i strukturen
 
+    //Makes a chain of a vector of subunits the user and connect the chain to Absref point Ra
+    void chain( vector<SubUnit> subContainer, AbsRefPoint Ra);
+    
+    //Makes a structure and generates a chain of sub units stored in a vector 
+    void chain( vector<SubUnit&> subContaine, StructureID SID );
+
     bool isLinked(AbsRefPoint& R1, AbsRefPoint& R2);
 
     bool refLinkedToSubUnit(AbsRefPoint& I, SubunitID sid);

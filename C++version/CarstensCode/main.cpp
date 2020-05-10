@@ -10,7 +10,7 @@ int main()
    GeneralSubUnit s3("s3", 4);                                            //laver general subunit s3
    GeneralSubUnit s4("s4", 4);                                            //laver general subunit s4
 
-   Structure S("GeneralStructure");                                       //laver strukturen S
+   Structure S("GS");                                       //laver strukturen S
    
    S.Add(&s1);                                                            //sætter sub unit s1 in i strukturen
    S.Join(&s2, RelRefPoint("end1"), AbsRefPoint("s1","end4"));            //sætter sub unit s1 og sub unit s2 sammen
@@ -23,7 +23,7 @@ int main()
    } 
    cout << "\n \n";
 
-   AbsRefPoint A = AbsRefPoint("s1", "end1");                             //Laver abseloute refencepoint
+   AbsRefPoint A1 = AbsRefPoint("s1", "end1");                             //Laver abseloute refencepoint
    AbsRefPoint B = AbsRefPoint("s4", "end4");                             //Laver abseloute refencepoint 
 
    /*RelativeReferencePointSet REFA = s1.getRelRefSet();                  //printer alle relative refence points i s1 ud
@@ -42,27 +42,27 @@ int main()
 
    //print path from ref to ref
    //--------------------------------------------------------------------------------------------------------------------------
-   vector<AbsRefPoint> phasepath = S.searchRef2Ref(A,B);
+   vector<AbsRefPoint> phasepath = S.searchRef2Ref(A1,B);
 
-   cout << "The path from (" << A.GetAbsRefPoint() << ") to (" << B.GetAbsRefPoint() << ") is:\n";
+   cout << "The path from (" << A1.GetAbsRefPoint() << ") to (" << B.GetAbsRefPoint() << ") is:\n";
 
    S.printPath(phasepath);
    //--------------------------------------------------------------------------------------------------------------------------
 
    //prints path from sub unit to ref
    //--------------------------------------------------------------------------------------------------------------------------
-   vector<AbsRefPoint> amplitudepath = S.searchSubUnit2Ref(A, s4.getId());
+   vector<AbsRefPoint> amplitudepath = S.searchSubUnit2Ref(A1, s4.getId());
 
-   cout << "\n\n The path from SubUnit (" << s4.getId() << ") to Abseloutreferencepoint (" << A.GetAbsRefPoint() << ") is:\n";
+   cout << "\n\n The path from SubUnit (" << s4.getId() << ") to Abseloutreferencepoint (" << A1.GetAbsRefPoint() << ") is:\n";
    
    S.printPath( amplitudepath );
    //--------------------------------------------------------------------------------------------------------------------------
 
    //prints path from ref to sub unit
    //--------------------------------------------------------------------------------------------------------------------------
-   vector<AbsRefPoint> path2 = S.searchRef2SubUnit(A, s4.getId());
+   vector<AbsRefPoint> path2 = S.searchRef2SubUnit(A1, s4.getId());
 
-   cout << "\n\n The path from Abseloutreferencepoint (" << A.GetAbsRefPoint() << ") to SubUnit (" << s4.getId() << ") to is:\n";
+   cout << "\n\n The path from Abseloutreferencepoint (" << A1.GetAbsRefPoint() << ") to SubUnit (" << s4.getId() << ") to is:\n";
    
    S.printPath(path2);
    //--------------------------------------------------------------------------------------------------------------------------
@@ -79,17 +79,14 @@ int main()
    //uncomment to get everything in latex format
    cout << latex;
 
-   cout << "\n \n" << "The abstract Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
-   cout << S.getPhaseFactor(A, B, 0) << "=" << S.getPhaseFactor( phasepath, 1 );
-
-   cout << "\n \n" << "The Phase factor of the structure path " << A.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
-   cout << S.getPhaseFactor( phasepath, 1 );   
-
+   cout << "\n \n" << "The abstract Phase factor of the structure path " << A1.GetAbsRefPoint() << " to " << B.GetAbsRefPoint() << " is: \n";
+   cout << S.getPhaseFactor(A1, B, 0) << "=" << S.getPhaseFactor( A1, B, 1 );
+   
    cout << "\n \n" << "The Abstract Amplitude form factor is: \n" ;
-   cout << S.getFormFactorAmplitude(A, 1);
+   cout << S.getFormFactorAmplitude(A1, 0) << "=" << S.getFormFactorAmplitude(A1, 1);
 
    cout << "\n \n" <<"The form factors are" << "\n";
-   cout << S.getFormFactor(1) << "\n";
+   cout << S.getFormFactor(0) << "=" << S.getFormFactor(1) << "\n";
 
    cout << "\n \n" <<"Some of the factors of s1 are" << "\n";
    cout << s1.getFormFactor( 0 ) << "\n";

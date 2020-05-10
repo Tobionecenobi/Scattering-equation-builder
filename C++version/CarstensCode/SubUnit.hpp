@@ -35,6 +35,7 @@ public:
     
     double excessScatteringLength;                                      // beta bumber we need when calculating numbers.
     int scatteres;                  // Number of scattering sites, needed for coupling to pyPRISM.
+    
     RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
 
 //Subunit Constructor
