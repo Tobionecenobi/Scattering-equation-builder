@@ -59,7 +59,7 @@ class GeneralSubUnit : public SubUnit {
                 RelRefPoint a = *it, b = *jt;  
                 PhaseFactors[ *it ][ *jt ] = SubUnit::getPhaseFactor( a , b );
                 }     
-            }
+            }   
         }
     }
 

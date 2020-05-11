@@ -88,6 +88,17 @@ int main()
    cout << "\n \n" <<"The form factors are" << "\n";
    cout << S.getFormFactor(0) << "=" << S.getFormFactor(1) << "\n";
 
+   Struct2Sub stub( "stub", S, ABSTRACT );
+   cout << "\n \n" <<"The Structure, " << S.get_Id() << ", is now made to a sub unit, " << stub.getId() << ", that has the factors: \n";
+   cout << stub.getFormFactor(0) << "=" << stub.getFormFactor(2) << "\n \n";
+   
+   RelRefPoint rlrp = *(stub.getRelRefSet().begin());
+   cout << rlrp << "\n";
+   RelRefPoint rlrp2 = *(stub.getRelRefSet().rbegin());
+   cout << rlrp2 << "\n";
+   cout << stub.getFormFactorAmplitude( rlrp  ,0) << "=" << stub.getFormFactorAmplitude( rlrp , 1) << "\n \n";
+   cout << stub.getPhaseFactor(  rlrp , rlrp2, 0) << " = " << stub.getPhaseFactor(rlrp, rlrp2, 1) << "\n";
+ 
    cout << "\n \n" <<"Some of the factors of s1 are" << "\n";
    cout << s1.getFormFactor( 0 ) << "\n";
    
