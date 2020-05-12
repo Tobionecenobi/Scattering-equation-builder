@@ -13,8 +13,7 @@
 #include <map>
 #include <utility>
 #include <ginac/ginac.h> 
-//using namespace GiNaC;
-//using namespace std;
+using namespace std;
 
 //===========================================================================
 // The acutual class
@@ -44,7 +43,7 @@ This is a concrete polymer class, which produce expressions that can be evaluate
        FormFactorAmplitudes[ RelRefPoint("end1") ] = (exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
        FormFactorAmplitudes[ RelRefPoint("end2") ] = (exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
 
-       PhaseFactors["end1"]["end2"] = exp(-x) ;                         //giver fase faktoren for end1 end2 <====== 
+       PhaseFactors["end1"]["end2"] = exp(-x);                         //giver fase faktoren for end1 end2 <====== 
 
 // more       
     }

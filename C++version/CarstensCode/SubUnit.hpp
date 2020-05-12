@@ -14,7 +14,6 @@
 #include <map>
 #include <utility>
 #include <ginac/ginac.h> 
-using namespace GiNaC;
 using namespace std;
 
 /*

@@ -6,13 +6,13 @@
 //===========================================================================
 // included dependencies
 #include "SubUnit.hpp"
+#include "GeneralSubUnit.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
 #include <map>
 #include <utility>
 #include <ginac/ginac.h> 
-using namespace GiNaC;
 using namespace std;
 
 //===========================================================================

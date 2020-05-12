@@ -2,9 +2,11 @@
 #include "RWPolymer.hpp"
 #include "GeneralSubUnit.hpp"
 #include "Struct2Sub.hpp"
+#include "Rod.hpp"
 
 int main()
 {
+   Rod r1("s1");
    GeneralSubUnit s1("s1", 4);                                            //laver general subunit s1
    GeneralSubUnit s2("s2", 4);                                            //laver general subunit s2
    GeneralSubUnit s3("s3", 4);                                            //laver general subunit s3
