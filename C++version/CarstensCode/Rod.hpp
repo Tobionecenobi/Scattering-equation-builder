@@ -35,7 +35,8 @@ class Rod : public GeneralSubUnit {
         local1[x] = getIndex(x, getSymbol(sid));
         local2[x] = q*L;
 
-        ex Si = integral(y, 0, x, sin(y)/y );
+        //Integral from 0 to x, taking change in variable y with expression sin(y)/y
+        ex Si = integral(y, 0, x, sin(y)/y );      
 
         FormFactor = (2*Si/x) - (4 / x*x) * sin(x/2) * 2;
 

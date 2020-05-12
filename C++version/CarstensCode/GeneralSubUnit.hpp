@@ -53,11 +53,11 @@ class GeneralSubUnit : public SubUnit {
             FormFactorAmplitudes[ *it ] = SubUnit::getFormFactorAmplitude( a );     
         }
 
-        for( it = RefPoints.begin(); it != RefPoints.begin(); it++){                                     //giver fase faktoren for end#i end end#i+1
-            for(jt = RefPoints.begin(); jt != RefPoints.begin(); jt++){
+        for( it = RefPoints.begin(); it != RefPoints.end(); it++){                                     //giver fase faktoren for end#i end end#i+1
+            for(jt = RefPoints.begin(); jt != RefPoints.end(); jt++){
                 if( *it < *jt ){
-                RelRefPoint a = *it, b = *jt;  
-                PhaseFactors[ *it ][ *jt ] = SubUnit::getPhaseFactor( a , b );
+                    RelRefPoint a = *it, b = *jt;  
+                    PhaseFactors[ *jt ][ *it ] = SubUnit::getPhaseFactor( a , b );
                 }     
             }   
         }
@@ -81,8 +81,8 @@ class GeneralSubUnit : public SubUnit {
             FormFactorAmplitudes[ *it ] = SubUnit::getFormFactorAmplitude( a );     
         }
 
-        for( it = RefPoints.begin(); it != RefPoints.begin(); it++){                                     //giver fase faktoren for end#i end end#i+1
-            for(jt = RefPoints.begin(); jt != RefPoints.begin(); jt++){
+        for( it = RefPoints.begin(); it != RefPoints.end(); it++){                                     //giver fase faktoren for end#i end end#i+1
+            for(jt = RefPoints.begin(); jt != RefPoints.end(); jt++){
                 if( *it < *jt ){
                 RelRefPoint a = *it, b = *jt;  
                 PhaseFactors[ *it ][ *jt ] = SubUnit::getPhaseFactor( a , b );
