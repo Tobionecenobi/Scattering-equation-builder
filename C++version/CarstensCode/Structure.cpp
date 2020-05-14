@@ -35,9 +35,7 @@ bool Structure::SubUnitExist( SubUnit* pS){
 
 //Joins a abseloute Reference point to a sub unit.
 void Structure::Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra)
-{
-  // Test at strukturen ikke er tom,
-  
+{ 
   // Test at relative referencepoint tilhører subunit pS <=== skal implementere i Subunit
 
   // Test at pS->GetID ikke findes i forvejen i strukturen.
@@ -117,26 +115,20 @@ set<AbsRefPoint> Structure::NeighborAbsRef( AbsRefPoint& x ){
   //set<AbsRefPoint>::iterator it; //is declared 12 lines above
   map< SubunitID , SubUnit* >::iterator itmap;
   set<RelRefPoint>::iterator itrelref;
-
-   
     
-    
-    SubunitID subId = x.GetsubID(); //gets subunit ID
-    itmap = StoredSubUnits.find( subId ); //finds subunit
-    if( itmap == StoredSubUnits.end() ) throw "noice";
+  SubunitID subId = x.GetsubID(); //gets subunit ID
+  itmap = StoredSubUnits.find( subId ); //finds subunit
+  if( itmap == StoredSubUnits.end() ) throw "noice";
     RelativeReferencePointSet relrefset = itmap -> second -> getRelRefSet(); //get relreferencepoints
     
-    for(itrelref = relrefset.begin(); itrelref != relrefset.end(); itrelref++){ // convert relrefpoint to absrefpoint
-      RelRefPoint relrefpoint = *itrelref;
-      AbsRefPoint nx =  AbsRefPoint( subId, relrefpoint );
-      if( nx != x ){
-        neighborTox.insert( nx );
-      }
+  for(itrelref = relrefset.begin(); itrelref != relrefset.end(); itrelref++){ // convert relrefpoint to absrefpoint
+    RelRefPoint relrefpoint = *itrelref;
+    AbsRefPoint nx =  AbsRefPoint( subId, relrefpoint );
+    if( nx != x ){
+      neighborTox.insert( nx );
     }
-  
+  } 
   return neighborTox;
-  
-
 }
 
 //Returns a path between two abseloute reference points
@@ -149,8 +141,6 @@ vector<AbsRefPoint> Structure::searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J){
   if ( isLinked( I , J ) ){
     return path;
   }
-  // how to make a pointer 
-  //AbsRefPoint *p = &I;
 
   //search front 
   queue<AbsRefPoint> queue;
@@ -216,7 +206,7 @@ vector<AbsRefPoint> Structure::searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J){
   return path; 
 }
 
-//see if refpoint is linked to subunit.
+//Checks if refpoint is linked to subunit.
 bool Structure::refLinkedToSubUnit(AbsRefPoint& I, SubunitID sid){
   
   map<SubunitID , SubUnit*>::iterator itmap;                                             //Find the subunit and get its relativereference points
@@ -274,8 +264,9 @@ vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
     }
   }
 
-  if( x.GetsubID() != sid )                                                          //if I is not found print a message
-    { cout << "When looking for path " << I.GetAbsRefPoint() << " to subunit " << sid << ", " << sid << " could not be found" << "\n" ;}
+  if( x.GetsubID() != sid ){                                                          //if I is not found print a message
+    cout << "When looking for path " << I.GetAbsRefPoint() << " to subunit " << sid << ", " << sid << " could not be found" << "\n" ;
+  }
 
   if( x.GetsubID() == sid ){
 
@@ -289,7 +280,6 @@ vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
     path.push_back( it -> first);
     path.push_back( I );                                                //puts the missing refpoint I into the path
   }
-
   return path;                                                          // return path subunit-> A-> ...-> B-> I
 }
 
@@ -340,9 +330,10 @@ bool Structure::subUnitLinkedToSubUnit(SubunitID sid1 , SubunitID sid2 ){
   return false;
 }
 
+//Takes to sub units linked together and returns the two reference points that links them as an Abslink
 AbsLink Structure::searchLink(SubunitID sid1 , SubunitID sid2 ){
   
-  map<SubunitID , SubUnit*>::iterator itmap;                                             //Find the subunits and get its relativereference points
+  map<SubunitID , SubUnit*>::iterator itmap;                                            
   
   itmap = StoredSubUnits.find( sid1 ); 
   RelativeReferencePointSet relrefset1 = itmap -> second -> getRelRefSet();
@@ -366,6 +357,7 @@ AbsLink Structure::searchLink(SubunitID sid1 , SubunitID sid2 ){
   throw "There is no two subunits there arent linked";
 }
 
+//Returns a path between two sub units.
 vector<AbsRefPoint> Structure::searchSubUnit2SubUnit( SubunitID sid1, SubunitID sid2){
   
   vector<AbsRefPoint> path; 
@@ -436,17 +428,7 @@ vector<AbsRefPoint> Structure::searchSubUnit2SubUnit( SubunitID sid1, SubunitID 
   return path;
 }
 
-
-AbsoluteReferencePointList* Structure::FindPath(AbsLink &L)             //finder pa th mellem to reference points og laver en liste med den path
-{
-   AbsoluteReferencePointList *arpl=new AbsoluteReferencePointList();
-   
-   // Path through structure.
-   // Note the recipient should deallcate the memory used by the list.
-   
-   return arpl;
-}
-
+//Takes two absref points and return the phase factor. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
 ex Structure::getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form = 1 ){
   
   vector<AbsRefPoint> path = searchRef2Ref( R1 , R2 ); 
@@ -454,6 +436,8 @@ ex Structure::getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form = 1 ){
   return getPhaseFactor( path, form );
 }
 
+
+//Takes a vector of absolute reference points and return the phase factor. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
 ex Structure::getPhaseFactor( vector<AbsRefPoint> &path, int form = 1 ){
   
   if( form == 0) return getIndex( PSI , ID, getSymbol( path[0].GetrefID() ), getSymbol( path[(path.size() - 1)].GetrefID() ) ); 
@@ -477,6 +461,8 @@ ex Structure::getPhaseFactor( vector<AbsRefPoint> &path, int form = 1 ){
   return PSIeq;
 }
 
+
+//Takes one absref points and returns the Form Factor Amplitude. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
 ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
   
   if( form == 0 ) return getIndex( A, ID, getSymbol(absref.GetrefID())); 
@@ -503,6 +489,8 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
   return Aeq;
 }
 
+
+//Returns the phase factor. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
 ex Structure::getFormFactor( int form = 1 ){
   
   if( form == 0) return getIndex(F, ID);
@@ -552,9 +540,3 @@ ex Structure::getFormFactor( int form = 1 ){
   }
   return Feq + 2 * expand(Fi);
 }
- 
-
-/*
-
-
-*/
