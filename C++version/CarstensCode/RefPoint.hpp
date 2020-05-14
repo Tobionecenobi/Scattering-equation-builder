@@ -61,11 +61,9 @@ typedef set<AbsRefPoint>                  AbsoluteReferencePointSet;      // Cou
 typedef list<AbsRefPoint>                 AbsoluteReferencePointList;     // Could be used for representing a path through a structure.
 typedef set<RelRefPoint>                  RelativeReferencePointSet;      // Could be used in a subunit to list reference points
 
-/*
 
-*/
-
-class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                                   //linker abseloute referencepunkter og sorterer dem efer id.
+//Links absolute reference points together and sorts them after id
+class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                                   
 {
   public:
     AbsLink(AbsRefPoint &R1,AbsRefPoint &R2)
@@ -101,33 +99,5 @@ class AbsLink : public pair<AbsRefPoint,AbsRefPoint>                            
 };
 
 inline bool operator<(AbsLink &R1, AbsLink &R2) { return R1.GetLink()<R2.GetLink(); }
-
-
-
-class RelLink: public pair<RelRefPoint,RelRefPoint>                                     //linker kun reference punkter men ikke dens subunit.
-{
-  public:
-
-   RelLink(RelRefPoint R1,RelRefPoint R2)
-     {
-        if (R1<R2)
-            {
-               first=R1;
-               second=R2;
-            }
-        else
-            {
-               first=R2;
-               second=R1;
-            }
-     }
-  
-    string GetLink() const { return first+"<=>"+second; }                                     //returnerer relLinks som en streng          
-    bool operator <(RelLink &b) { return GetLink()<b.GetLink(); }                       //forklarer boolean hvordan man sammenligner to links
-};
-
-inline bool operator<(RelLink &R1, RelLink &R2) { return R1.GetLink()<R2.GetLink(); }
-inline bool operator<(const RelLink &R1, const RelLink &R2) { return R1.GetLink()<R2.GetLink(); }
-
 
 #endif

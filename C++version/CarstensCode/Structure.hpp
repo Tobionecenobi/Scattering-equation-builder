@@ -140,18 +140,6 @@ public:
     ex getFormFactorAmplitude( AbsRefPoint &absref, int form);
 
     ex getFormFactor( int form );                                         // returnerer form factoren af strukturen
-
-/*    
-// Return abstract expressions for tree structure. I.e. using F_id(q), A_id_ref(q), Psi_id_ref1,ref2(q) as variables. 
-// Calculate these. There is no need for internal variables.
-    ex AbstractFormFactorAmplitude(AbsRefPoint &R);
-    ex AbstractPhaseFactor(AbsLink &L);
-
-// Return concrete scattering expressions for tree structure. Where the F,A,Psi expressions from the sub-units are inserted.
-    ex FormFactor();
-    ex FormFactorAmplitude(AbsRefPoint &R);
-    ex PhaseFactor(AbsLink &L);
-*/
   
 };
 
