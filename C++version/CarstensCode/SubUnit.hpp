@@ -9,10 +9,6 @@
 #include "SubTypes.hpp"
 #include "SymbolInterface.hpp"
 #include <iostream>
-#include <vector>
-#include <string>
-#include <map>
-#include <utility>
 using namespace std;
 
 /*

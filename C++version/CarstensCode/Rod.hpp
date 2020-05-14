@@ -9,6 +9,10 @@
 
 //===========================================================================
 // The acutual class
+
+/*
+This is a concrete Rod class, which produce expressions that can be evaluated to numbers.
+*/  
 class Rod : public GeneralSubUnit {
     public:
 

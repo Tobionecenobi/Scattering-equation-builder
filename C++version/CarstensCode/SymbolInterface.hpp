@@ -6,9 +6,6 @@
 //===========================================================================
 // included dependencies
 #include <iostream>
-#include <string>
-#include <map>
-#include <utility>
 #include <ginac/ginac.h>
 
 using namespace GiNaC;

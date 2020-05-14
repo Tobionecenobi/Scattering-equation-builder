@@ -67,30 +67,41 @@ public:
 // How to handle the empty structure, where R should be "".
     void Join(SubUnit* pS, RelRefPoint Rr, AbsRefPoint Ra);     // adder to subunits sammen i strukturen
 
-    //Makes a chain of a vector of subunits the user and connect the chain to Absref point Ra
+//Makes a chain of a vector of subunits the user and connect the chain to Absref point Ra
     void chain( vector<SubUnit> subContainer, AbsRefPoint Ra);
     
-    //Makes a structure and generates a chain of sub units stored in a vector 
+//Makes a structure and generates a chain of sub units stored in a vector 
     void chain( vector<SubUnit&> subContaine, StructureID SID );
 
+//Checks if two reference points are linked
     bool isLinked(AbsRefPoint& R1, AbsRefPoint& R2);
 
+//Checks if reference point is linked to sub unit
     bool refLinkedToSubUnit(AbsRefPoint& I, SubunitID sid);
 
+//Checks it two sub units are linked together
     bool subUnitLinkedToSubUnit( SubunitID sid1 , SubunitID sid2 );
 
+//Takes to sub units linked together and returns the two reference points that links them as an Abslink
     AbsLink searchLink(SubunitID sid1 , SubunitID sid2 );
 
+//Returns a set of all neigbours to an abseloutrefencepoint
     set<AbsRefPoint> NeighborAbsRef( AbsRefPoint& x );
 
+//Returns a path between two abseloute reference points
     vector<AbsRefPoint> searchRef2Ref(AbsRefPoint& I, AbsRefPoint& J);
 
+//Returns a path between from a sub unit to an abseloute referencepoint.
     vector<AbsRefPoint> searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid);
 
+//Returns the path from an abseloute reference point to a sub unit.
     vector<AbsRefPoint> searchRef2SubUnit(AbsRefPoint& I, SubunitID sid);
 
+
+//Returns a path between two sub units.
     vector<AbsRefPoint> searchSubUnit2SubUnit(SubunitID sid1 , SubunitID sid2 );
 
+//Prints path out in cout
     void printPath( vector<AbsRefPoint> path){
         for(auto i = path.begin(); i != path.end(); i++ ){
             if( i + 1 == path.end()){
@@ -128,18 +139,24 @@ public:
         return GLEX -> getSymbol(s1, latex );
     }
 
+    //Defined the most commenly used symbols in the Structure
     symbol BETA = getSymbol("BETA", "\\beta");
     symbol ID = getSymbol( id );
     symbol F = getSymbol("F");
     symbol A = getSymbol("A");
     symbol PSI = getSymbol("PSI", "\\Psi");
 
+    //Takes a vector of absolute reference points and return the phase factor. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
     ex getPhaseFactor( vector<AbsRefPoint> &path, int form );
+    
+    //Takes two absref points and return the phase factor. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
     ex getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form );
     
+    //Takes one absref points and returns the Form Factor Amplitude. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
     ex getFormFactorAmplitude( AbsRefPoint &absref, int form);
 
-    ex getFormFactor( int form );                                         // returnerer form factoren af strukturen
+    //Returns the form factor. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
+    ex getFormFactor( int form );                                      
   
 };
 

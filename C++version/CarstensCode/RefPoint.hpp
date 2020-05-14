@@ -26,10 +26,11 @@
 // Since sub-unit ids are unique, we can always address any reference point by such a string combination.
 // Inside a sub-unit, we only need the referencepoint_ids  I think of these as relative to the sub-unit itself.
 
-typedef string StructureID; //omdøber string til structure ID
+typedef string StructureID;
 typedef string SubunitID;
 typedef string RelRefPoint;
 
+//Constructs an absolute reference point
 class AbsRefPoint {
 public:
     SubunitID   subID;      // Name of sub-unit
