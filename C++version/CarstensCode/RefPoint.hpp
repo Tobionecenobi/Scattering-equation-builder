@@ -3,6 +3,8 @@
 
 #include <string>
 #include <utility>
+#include <set>
+#include <list>
 
 /* Small class to represent a reference points and their relations */
 

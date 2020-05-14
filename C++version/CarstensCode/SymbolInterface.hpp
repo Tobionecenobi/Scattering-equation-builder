@@ -6,11 +6,11 @@
 //===========================================================================
 // included dependencies
 #include <iostream>
-#include <vector>
 #include <string>
 #include <map>
 #include <utility>
-#include <ginac/ginac.h> 
+#include <ginac/ginac.h>
+
 using namespace GiNaC;
 using namespace std;
 

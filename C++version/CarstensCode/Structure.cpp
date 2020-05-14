@@ -1,9 +1,5 @@
-#include <iostream>
-#include <string>
-#include <ginac/ginac.h>
 #include "Structure.hpp"
 
-using namespace GiNaC;
 using namespace std;
 
 //Inserts Absoulute Refence point into the list StructRefPoints

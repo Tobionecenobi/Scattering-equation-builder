@@ -5,15 +5,7 @@
 
 //===========================================================================
 // included dependencies
-#include "SubUnit.hpp"
 #include "GeneralSubUnit.hpp"
-#include <iostream>
-#include <vector>
-#include <string>
-#include <map>
-#include <utility>
-#include <ginac/ginac.h> 
-using namespace std;
 
 //===========================================================================
 // The acutual class
@@ -22,7 +14,7 @@ class Rod : public GeneralSubUnit {
 
     Rod( SubunitID sid) : GeneralSubUnit(sid){
         
-        type = ABSTRACT;
+        type = ROD;
 
         AddReferencePoint( "end1" );
         AddReferencePoint( "end2" );

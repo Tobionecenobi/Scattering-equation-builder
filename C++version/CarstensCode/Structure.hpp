@@ -10,9 +10,6 @@
 #include <string>
 #include <map>
 #include <queue> 
-#include <ginac/ginac.h>    
-
-using namespace GiNaC;
 using namespace std;
 
 #include "RefPoint.hpp"

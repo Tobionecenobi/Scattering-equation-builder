@@ -8,11 +8,7 @@
 #include "SubUnit.hpp"
 #include "GeneralSubUnit.hpp"
 #include <iostream>
-#include <vector>
-#include <string>
-#include <map>
 #include <utility>
-#include <ginac/ginac.h> 
 using namespace std;
 
 //===========================================================================
@@ -22,7 +18,7 @@ class Struct2Sub : public GeneralSubUnit {
     
     //Convert structure to a subunit of a specefic type, and name the relative reference point "structure id:subunit id: original relative ref point id"
     Struct2Sub( SubunitID sid, Structure& S, TypeID t ) : GeneralSubUnit(sid){               
-        type = ABSTRACT;                                                             //hvilken type distribution den bruger
+        type = t;                                                             //hvilken type distribution den bruger
         id = sid;
         
         AbsoluteReferencePointSet absref = S.StructRefPoints;
@@ -58,7 +54,7 @@ class Struct2Sub : public GeneralSubUnit {
     //Convert structure to a subunit of a specefic type, and name the relatives reference point with a string you choose + the number of the rel ref point
     Struct2Sub( SubunitID sid, Structure& S, TypeID t, string refname ) : GeneralSubUnit(sid){               //GeneralSubUnit 
     
-        type = ABSTRACT;                                                             //hvilken type distribution den bruger
+        type = t;                                                             //hvilken type distribution den bruger
         id = sid;
         
         AbsoluteReferencePointSet absref = S.StructRefPoints;
