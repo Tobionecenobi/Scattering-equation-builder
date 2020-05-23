@@ -24,12 +24,13 @@ class Rod : public GeneralSubUnit {
         AddReferencePoint( "end2" );
         
         symbol q = getSymbol("q");   
-        symbol L = getSymbol("L");
+        symbol L = getSymbol("L." + sid, "L_{" + sid + "}");
         symbol x = getSymbol("x");
         symbol y = getSymbol("y");
 
-        local1[x] = getIndex(x, getSymbol(sid));
+        local1[x] = getSymbol("x." + sid, "x_{" + sid + "}");//getIndex(x, getSymbol(sid));
         local2[x] = q*L;
+        local2[x] = x;
 
         //Integral from 0 to x, taking change in variable y with expression sin(y)/y
         ex Si = integral(y, 0, x, sin(y)/y );      

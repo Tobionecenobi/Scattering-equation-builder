@@ -44,7 +44,9 @@ class GeneralSubUnit : public SubUnit {
     map< RelRefPoint ,map<RelRefPoint, ex> > PhaseFactors;                    // map: key er et rellink og mapper til en fase faktor equation
 
 
-    exmap local1, local2; 
+    exmap local1; 
+    exmap local2;
+    exmap local3; 
     /*RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
     */ //RYKKET TILBAGE TIL SUBUNIT FORDI ELLERS KAN EN SUBUNIT IKKE TJEKKE SINE REFERENCE PUNKTER IGENNEM
 
@@ -93,10 +95,13 @@ class GeneralSubUnit : public SubUnit {
             return SubUnit::getFormFactor( form );
         }
         else if(form == 1){
-            return FormFactor.subs( local1 ); 
+            return FormFactor.subs( local1, subs_options::no_index_renaming ); 
         }
         else if(form == 2){
-            return FormFactor.subs( local2 );
+            return FormFactor.subs( local2, subs_options::no_index_renaming );
+        }
+        else if(form == 3){
+            return FormFactor.subs( local3, subs_options::no_index_renaming );
         }   
         throw "Wrong input in getFormFactor";
     }
@@ -109,10 +114,13 @@ class GeneralSubUnit : public SubUnit {
             return SubUnit::getFormFactorAmplitude( R );
         }
         else if( form == 1){
-            return FormFactorAmplitudes[R].subs( local1 );
+            return FormFactorAmplitudes[R].subs( local1, subs_options::no_index_renaming );
         }
         else if( form == 2){
-            return FormFactorAmplitudes[R].subs( local2 );
+            return FormFactorAmplitudes[R].subs( local2, subs_options::no_index_renaming );
+        }
+        else if( form == 3){
+            return FormFactorAmplitudes[R].subs( local3, subs_options::no_index_renaming );
         }
         throw "Wrong input in getFormFactorname()";
     }
@@ -121,7 +129,7 @@ class GeneralSubUnit : public SubUnit {
         
         if( !has(R1) || !has(R2) ) throw "RelRefPoint does not exist";
         
-        if( R2 < R1 ){
+        if( R2 > R1 ){
             RelRefPoint temp = R1;
             R1 = R2;
             R2 = temp;
@@ -132,11 +140,15 @@ class GeneralSubUnit : public SubUnit {
         }
         else if( form == 1 ){
             if(R1 == R2) return ex (1.0);
-            else return PhaseFactors[R1][R2].subs(local1);
+            else return PhaseFactors[R1][R2].subs(local1, subs_options::no_index_renaming);
         }
         else if( form == 2){
             if(R1 == R2) return ex (1.0);
-            else return PhaseFactors[R1][R2].subs(local2);
+            else return PhaseFactors[R1][R2].subs(local2, subs_options::no_index_renaming);
+        }
+         else if( form == 3){
+            if(R1 == R2) return ex (1.0);
+            else return PhaseFactors[R1][R2].subs(local3, subs_options::no_index_renaming);
         }
         throw "wrong form input";
     }

@@ -480,7 +480,7 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
       Aeq = Aeq + Arefend;
     }
     else{
-      ex PSI = getPhaseFactor( path, form); // Jeg er ikke sikker på om form skal være med - 1
+      ex PSI = getPhaseFactor( path, form - 1 ); // Jeg er ikke sikker på om form skal være med - 1
       RelRefPoint r( (path.end() - 1) -> GetrefID() );
       ex Arefend = i -> second -> getFormFactorAmplitude( r , form - 1 );
       Aeq = Aeq + PSI*Arefend; 
@@ -522,7 +522,8 @@ ex Structure::getFormFactor( int form = 1 ){
 
         ex Astart = imap -> second -> getFormFactorAmplitude( start , form - 1);
         ex Aend = jmap -> second -> getFormFactorAmplitude( end , form - 1);
-        ex PSImid = imap -> second -> getPhaseFactor( start, end , form - 1);
+        //ex PSImid = imap -> second -> getPhaseFactor( start, end , form - 1); // <==== Den skal da ikke tage fase faktoren af en sub unit men alle subunits
+        ex PSImid = getPhaseFactor( path, form );
 
         Fi = Fi + Astart * PSImid * Aend;
       }
@@ -538,5 +539,5 @@ ex Structure::getFormFactor( int form = 1 ){
       }
     }
   }
-  return Feq + 2 * expand(Fi);
+  return Feq + 2 * Fi;
 }

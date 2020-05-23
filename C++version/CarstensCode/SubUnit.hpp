@@ -11,6 +11,7 @@
 #include <iostream>
 using namespace std;
 
+
 /*
 Originally I thought SubUnit should be abstract, but below its not abstract in a C++
 sense. But this was because the return functions for Formfactor, formfactorampltitude, and phasefactors
@@ -21,7 +22,7 @@ needed to be implemented here, since they are the same for all derived classes.
 // The acutual class
 class Structure;
 
-class SubUnit{                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
+class   SubUnit{                                                             //subunit er ikke nedarvet men en base klasse i sig selv?
 public:
 
     SubunitID id;                                                           //sætter sub unit id til at være id <==== hvordan ved vi at det er af type string???
@@ -49,6 +50,17 @@ public:
          if (!ret.second) cout << "DIE Refpoint already in Refpointset";
       }
 
+    //changes the id of the subunit (used in struct2sub)
+    void changeID(string a){
+        id = a + id;
+    }
+
+    //changes the name of all relative reference points
+    void changerelrepoints( string a ){
+        for( auto r: RefPoints){
+            r = RelRefPoint( a + r );
+        }
+    } 
     //Makes a pointer to SymbolInterface class
     SymbolInterface *GLEX = SymbolInterface::instance();
 
@@ -88,12 +100,12 @@ public:
 
     //Returns form factor amplitude as one symbol
     virtual ex getFormFactorAmplitude( RelRefPoint &R, int form = 0 ){
-        return GLEX -> getIndex(BETA, ID) * GLEX -> getIndex( A, ID, GLEX -> getSymbol( R ));
+        return GLEX -> getIndex(BETA, ID) * GLEX -> getIndex( A, ID, getSymbol( R ));
     }
 
     //Returns the phase factor as one symbol
     virtual ex getPhaseFactor( RelRefPoint &R1 , RelRefPoint &R2, int form = 0 ){
-        return GLEX -> getIndex( PSI, ID, GLEX -> getSymbol(R2), GLEX -> getSymbol(R1) );
+        return GLEX -> getIndex( PSI, ID, GLEX -> getSymbol(R2), getSymbol(R1) );
     }
 };
 /*

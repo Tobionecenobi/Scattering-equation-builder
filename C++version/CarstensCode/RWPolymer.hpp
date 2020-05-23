@@ -24,12 +24,13 @@ This is a concrete polymer class, which produce expressions that can be evaluate
        AddReferencePoint( RelRefPoint("end2") );                                    //edder reference point end2 til objektet
 
        symbol q = getSymbol("q");                                                                 //definere symbol q                                                    //definere symbol Rg2 plus subunit id
-       ex Rg2 = pow(getIndex(getSymbol("R"), getSymbol("g"), getSymbol(sid)),2);
+       ex Rg2 = pow(getSymbol("R.g."+sid, "R_{g:" + sid + "}"),2);//pow(getIndex(getSymbol("R"), getSymbol("g"), getSymbol(sid)),2);
        symbol x = getSymbol("x");
-       
-       local1[x] = getIndex(x, getSymbol(sid));
-       local2[x] = pow(q,2)*Rg2;
+       symbol xid = getSymbol("x."+ sid, "x_{" + sid + "}"); //getIndex(getSymbol("x"), getSymbol(sid) );
 
+       local1[x] = xid;
+       local2[x] = pow(q,2)*Rg2;
+       local3[x] = x;
        FormFactor=2.0*(exp(-x)-1.0+x)/(pow(x,2));                       //giver formlen for formfactoren
 
        FormFactorAmplitudes[ RelRefPoint("end1") ] = (exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1

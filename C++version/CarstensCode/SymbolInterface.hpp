@@ -20,7 +20,7 @@ class SymbolInterface{
     SymbolInterface(){ }
 
     map<string, symbol> symbolDirectory;
-    map<string, ex> indexDirectory;
+    map<idx, ex> indexDirectory;
     
     static SymbolInterface* instance(); 
 
