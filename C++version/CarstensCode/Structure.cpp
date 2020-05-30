@@ -223,7 +223,7 @@ bool Structure::refLinkedToSubUnit(AbsRefPoint& I, SubunitID sid){
 
 //Returns a path between from a sub unit to an abseloute referencepoint.
 vector<AbsRefPoint> Structure::searchSubUnit2Ref(AbsRefPoint& I, SubunitID sid){
-  vector<AbsRefPoint> path; 
+  vector<AbsRefPoint> path;
 
   //checks if reference point is not on the subunit or linked to the subunit
   if (I.GetsubID() == sid) return path;
