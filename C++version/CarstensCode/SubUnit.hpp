@@ -28,8 +28,8 @@ public:
     SubunitID id;                                                           //sætter sub unit id til at være id <==== hvordan ved vi at det er af type string???
     TypeID type;                                                            //type id fortæller hvilken slags type sub unit vi har
     
-    double excessScatteringLength;                                      // beta bumber we need when calculating numbers.
-    int scatteres;                  // Number of scattering sites, needed for coupling to pyPRISM.
+    double excessScatteringLength;                                          // beta bumber we need when calculating numbers.
+    int scatteres;                                                          // Number of scattering sites, needed for coupling to pyPRISM.
     
     RelativeReferencePointSet RefPoints;                                    //Laver relative reference poin set <======= Igen hvordan ved vi hvilken type?
 
@@ -42,7 +42,7 @@ public:
     virtual SubunitID                 getId() { return id; }                //returner subunit id
     virtual TypeID                    getType() { return type; }            //returner typen af subunit vi har
     
-    RelativeReferencePointSet getRelRefSet() { return RefPoints; }  //returner relativerefpoints
+    RelativeReferencePointSet getRelRefSet() { return RefPoints; }          //returner relativerefpoints
 
     virtual void AddReferencePoint( RelRefPoint R )                         //adder reference points til en abstract subunit
       {
