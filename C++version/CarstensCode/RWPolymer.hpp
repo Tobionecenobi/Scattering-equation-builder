@@ -27,16 +27,19 @@ This is a concrete polymer class, which produce expressions that can be evaluate
        ex Rg2 = pow(getSymbol("R.g."+sid, "R_{g:" + sid + "}"),2);//pow(getIndex(getSymbol("R"), getSymbol("g"), getSymbol(sid)),2);
        symbol x = getSymbol("x");
        symbol xid = getSymbol("x."+ sid, "x_{" + sid + "}"); //getIndex(getSymbol("x"), getSymbol(sid) );
+       symbol beta1 = getSymbol("BETA."+sid, "\beta_{" + sid + "}");
 
        local1[x] = xid;
        local2[x] = pow(q,2)*Rg2;
        local3[x] = x;
-       FormFactor=2.0*(exp(-x)-1.0+x)/(pow(x,2));                       //giver formlen for formfactoren
 
-       FormFactorAmplitudes[ RelRefPoint("end1") ] = (exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
-       FormFactorAmplitudes[ RelRefPoint("end2") ] = (exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
+       FormFactor= pow(BETA, 2)*(2.0*(exp(-x)-1.0+x)/(pow(x,2)));                       //giver formlen for formfactoren
 
-       PhaseFactors["end1"]["end2"] = exp(-x);                         //giver fase faktoren for end1 end2 <====== 
+       FormFactorAmplitudes[ RelRefPoint("end1") ] = BETA*(exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
+       FormFactorAmplitudes[ RelRefPoint("end2") ] = BETA*(exp(-x)-1)/(x);   //giver formfactoramplituden fra reference punkt end1
+
+       PhaseFactors["end1"]["end2"] = exp(-x);                         //giver fase faktoren for end1 end2 <======
+       PhaseFactors["end2"]["end1"] = exp(-x);                          //giver fasefaktoren for end1 to end 2
 
 // more       
     }

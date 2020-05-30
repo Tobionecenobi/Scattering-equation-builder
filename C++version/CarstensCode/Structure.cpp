@@ -440,7 +440,7 @@ ex Structure::getPhaseFactor( AbsRefPoint &R1, AbsRefPoint &R2, int form = 1 ){
 //Takes a vector of absolute reference points and return the phase factor. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
 ex Structure::getPhaseFactor( vector<AbsRefPoint> &path, int form = 1 ){
   
-  if( form == 0) return getIndex( PSI , ID, getSymbol( path[0].GetrefID() ), getSymbol( path[(path.size() - 1)].GetrefID() ) ); 
+  if( form == 0) return getIndex( PSI , ID, getSymbol( path[0].GetsubID() + ":" + path[0].GetrefID() ), getSymbol( path[(path.size() - 1)].GetsubID() + ":" + path[(path.size() - 1)].GetrefID() ) ); 
   
   ex PSIeq = 1; 
 
@@ -465,7 +465,7 @@ ex Structure::getPhaseFactor( vector<AbsRefPoint> &path, int form = 1 ){
 //Takes one absref points and returns the Form Factor Amplitude. It also takes an integer from 0 to 3 that that takes care of how complex the stuff is returned
 ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
   
-  if( form == 0 ) return getIndex( A, ID, getSymbol(absref.GetrefID())); 
+  if( form == 0 ) return getIndex( A, ID, getSymbol( absref.GetsubID() + absref.GetrefID())); 
 
   map<SubunitID , SubUnit * >::iterator i;
   ex Aeq = 0;
@@ -480,7 +480,7 @@ ex Structure::getFormFactorAmplitude( AbsRefPoint &absref, int form = 1  ){
       Aeq = Aeq + Arefend;
     }
     else{
-      ex PSI = getPhaseFactor( path, form - 1 ); // Jeg er ikke sikker på om form skal være med - 1
+      ex PSI = getPhaseFactor( path, form ); // Jeg er ikke sikker på om form skal være med - 1
       RelRefPoint r( (path.end() - 1) -> GetrefID() );
       ex Arefend = i -> second -> getFormFactorAmplitude( r , form - 1 );
       Aeq = Aeq + PSI*Arefend; 
@@ -522,7 +522,6 @@ ex Structure::getFormFactor( int form = 1 ){
 
         ex Astart = imap -> second -> getFormFactorAmplitude( start , form - 1);
         ex Aend = jmap -> second -> getFormFactorAmplitude( end , form - 1);
-        //ex PSImid = imap -> second -> getPhaseFactor( start, end , form - 1); // <==== Den skal da ikke tage fase faktoren af en sub unit men alle subunits
         ex PSImid = getPhaseFactor( path, form );
 
         Fi = Fi + Astart * PSImid * Aend;
@@ -539,5 +538,5 @@ ex Structure::getFormFactor( int form = 1 ){
       }
     }
   }
-  return Feq + 2 * Fi;
+  return Feq + 2 * expand(Fi);
 }
