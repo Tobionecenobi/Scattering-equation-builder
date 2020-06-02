@@ -1,0 +1,244 @@
+\section{Small introduction to C++, Ginac, design choices and API's }
+    This is a short introduction to people who have coding experience but need a refresh or knowledge for some concepts in c++, programming and the package ginac. 
+    \subsection{Ginac}
+    Ginac is library that offers a integrated system to do symbol manipulation in c++, like $x*x = x^2$ or $\frac{x}{x}=1$ or $x = \int y+5y^2 dy $ etc. It also have a set algebraic properties, like reducing and respanding expression, solving differential eq or take the integral and derivative of variety of expressions. Ginac has a nice feature where it can print equations in latex, which in my case has been terrific and life saver! For ginac to work one have to use their types for symbols, indices and expressions.
+    \subsection{Types}
+    C++ code use types. Types is used to tell the compiler how to store and handle a certain value. A widely used type is \texttt{int} that tells the compiler to store the value as a int in a specific number of bits (depends on hardware and compiler). If you want to store decimal number, you use the types \texttt{float} and \texttt{double} that differs in how many bits there should be used for representing the decimal number. You can also store characters using the type char or character connected to text using string. If you want to make true false statements you use booleans, called \texttt{bool}, that is type containing the true or false. Ginac have the types. \texttt{symbol} is a way to represent a symbol like $x$. The type \texttt{idx} to represent a indices like $n$ in $x_n$ and it has the type \texttt{ex}, which is a type that can hold expressions of symbols, indices, integer and decimal number, and mathematical operation and transformation on these \cite{Ginac}.
+    \subsection{Keywords}
+    Key words in c++ is predefined or reserved words with a meaning already defined by the c++. Many keywords are known like if, do, while, for, return etc. While others is less known like: 
+    \begin{labeling}{alligator}
+    \item [auto] automatically figure out the type of the value right to the keyword.
+    \item [public \& private]  After these keywords makes methods private or public to other classes.
+    \item[const] promises the compiler that the value set will not change or promises the compiler that a method is a "read-only" method, which means that it does not modify the object from which it is called.
+    \item[inline] Is for functions outside the class and tell the compiler that each time the inline function is called it should send a copy of the inline function.
+    \end{labeling}
+    \subsection{Classes}
+    Classes in ginac has two objectives. One, to store methods and, two, create object of that class. Objects are created by a constructor. The constructor take parameters like function does and use those parameter to manipulate the object. A object has a name and a address so the compiler know where it can be found. To call parameters inside a object you need to make methods for doing this.
+    \subsection{Inheritances}
+    Inheritance is when a class inherit a methods and variables from another class, usually called a parent or base class. This means that you don't have to redefine methods because they are inherited from the other class. A parent class can also make sure that a child class have to implement a new method by using the keyword \texttt{virtual} that also take care of the diamond problem (see figure \ref{fig:Diamond problem}).
+    \begin{figure}
+        \centering
+        \includegraphics[width = 0.3\textwidth]{images/diamondProblem.png}
+        \caption{The diamond problem: here class D don't know which route it should take to inherent from class A. The solution is: using virtual functions in classes B and C. The keyword virtual makes the compiler know that a possible "double inheritance" is possible. The compiler note this and choose a route if the problem appears.}
+        \label{fig:Diamond problem}
+    \end{figure} 
+    If you want to control what methods can be inherited you can use the keywords public, protected or private. The way these keywords control inheritance of methods from base class to a derived claSs can be seen in figure \ref{fig:inheritance}. The main thing is that if you don't want a method from your class to be inherited put it in the private section.
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.5]{images/Inheritance.png}
+        \caption{Shows how public, protected and private inheritances takes public and protected methods and reassign them as public, protected or private methods in the derived class}
+        \label{fig:inheritance}
+    \end{figure}
+    
+    \subsection{API}
+    API is a piece of code that make two different programs speak together. The main job of the API is to take the output of a program and translate to an input to another program. These program does not need to be in the same programming language. The problems with using API is if one of the programs talking to each other is updated so it changes input/output, the API also needs to be updated to translate correctly between the programs.
+    
+    \subsection{Breadth-first search alike algorithm}
+    In the implementation we want to go through the structure between two reference points taking the shortest path possible. There is a lot of algorithms for finding the shortest path in a like Dijkstra's algorithm, Bellman–Ford algorithm, Johnson's algorithm, Depth-first search algorithm or Breath-first search algorithm. In this project we choose the the breath first search algorithm, \textcolor{red}{because we favoured none recursive and queue approach the breath first search algorithm offer. ER DET IKKE I DISKUSSIONEN MAN SKAL DISKUTERE HVORFOR MAN VÆLGER EN ALGORITME?} The pseudo code for breath first search is as so: 
+    \begin{lstlisting}[caption={Pseudo code for breath first search algorithm},label ={lst:breathfirstsearchalgorithm},language= pseudo, frame = single]
+    BFS(Structure S, AbsrefPoint refstart_r){
+        let Q be a queue
+        label refstart_r as discovered
+        label refstart_r as root to parent child tree
+        
+        Q.enqueue(refstart_r)
+        while Q is not empty do
+            r := Q.dequeue()
+            if r is the goal then
+                break loop
+            for all edges from r to w in G.neighboursTo(r) do
+            if w is not labeled as discovered then
+                label w as discovered
+                w.parent := r
+                Q.enqueue(w)
+    }
+    \end{lstlisting}
+    \textcolor{red}{The breath first search algorithm takes a graph (in our case a structure) and a starting Node (a absolute reference point). Then create a queue, Q and take the starting node an labels as visited (by putting it in a set called visited) and puts it into Q. While the queue is not empty it takes an node from the start of Q. If it is the node we are looking after we break loop and iterate through the parents to we get to starting loop and return a list of all the parents. If it is not the reference point we looking for, we find the neighbours to r and put them into the queue, set them as children to r and discards r from Q. Then we take the node in the beginning of Q and repeat the process til the nodes is found or Q is empty. IS IT REALLY NESSESARY TO PUT WORDS ON THE PSEUDO CODE?}\\\\
+    This is the main idea. Though we had to not only look at the path between absolute reference point but also from absolute reference point to a sub unit and the path between two sub units. Therefore we had to tweak the code to check if the absolute reference point belong to the a specific sub unit we wanted to go to and then stop to return the path. We also wanted the path between two sub units so first we did the approach from reference point to sub unit and then when treating through the parents checked if the parent belonged to the our starting sub unit, if it did we returned the path between that parent and the ending leaf of the parent child tree. In short we have three breadth first search alike algorithms. One for absolute reference point to abseloute reference point, one for for abselout reference to sub unit and one for sub unit to sub unit.  
+    
+    
+    \subsection{Design of the scattering function builder}
+    The main function of this program is to build a structure of an arbitrary number of sub units of an arbitrary species (polymer, micelle, rod etc.) and spit out the form factor of the structure build. \paragraph{The sub unit} The way the program is designed to do is making a class call SubUnit. SubUnit takes and id and relative reference point and gives them to a general sub unit or a specific sub unit. By specific sub unit I mean polymers, disks, rods etc.. \paragraph{The general sub unit} The class GeneralSubUnit public inherit from the base class SubUnit. The general sub unit takes care of making general -form factor, -form factor amplitude and -phase factor. These factors get function are virtual and can therefore be overwritten by the classes of specific sub units that inherits from GeneralSubUnit. The class polymer is a specific sub unit and contains its factors and relative reference points. The specific sub unit inherits id and and the to gets its factors (see figure \ref{fig:design} ). 
+    \begin{figure}
+        \centering
+        \includegraphics[width = \textwidth]{images/designofprogram.png}
+        \caption{An attempt to show how the different classes communicate with each other}
+        \label{fig:design}
+    \end{figure}
+    \paragraph{The structure class} The structure class create object with a lot of containers, a container for subunits, stored subunits, and absolute reference points. When a sub unit is added to the structure, the sub unit will be stored in the container storedSubUnits and it relative refenence points will be converted to absolute reference points (here relative reference point is just name like "\textit{end1}" and absolute reference point is the sub unit id like "\textit{s1}" with relative reference point name. The absolute point is then named "\textit{s1end1}"). The converted reference point will be stored in absolute reference point set. The procedure will happen when joining a sub unit to the structure though when joining a link of two reference point will happen this link is stored as a pair of these absolute reference points in container called links.
+    \\\\Now the structure is build and we can find the form factor of the structure. To this a function \textt{getFormFactor( int Form )} is called. If form = 0 then getFormFactor returns the symbol "$F_{Sid}$" where $Sid$ is the id of the structure. If form = 1 then we are summing the form factor of each subunit by going through all the sub units in the storedsubunit map and gettheir sub unit. Then we are taking a subunit and look at all the other sub units. We take all the different paths between that sub unit and all the other sub unit, by using depth first search algorithm. The path is then used to find the phasefactor of the sub unit, which it looks up by looking at the names two relative reference \textcolor{blue}{and call the phase factor for the sub unit that looks up the two reference points up and then returns the phase factor for those two reference points}. Then it take the sub units in the beginning and in the end of the path and get their form factor amplitude. Then we take the product of the two form factor amplitudes and phase factor. We take this product add it to the form factor of the structure. This is done with all combinations of sub units in the structure where the sub units are not the same. Then we are left with a sum of the form factors of the sub units added with a sum of the products of form factor amplitudes and phase factors. 
+    \\\\The structures form factor amplitude can be got by calling \texttt{getFormFactorAmplitude(AbsRefPoint &absref, int form ))} that takes a reference point and integer. If form = 0 then the function returns $A_{Sid\alpha}$ where $Sid$ is the structure id and $\alpha$ is the reference point you want the formfactor amplitude for. If  0 $<$ form $<$ 5 the function sets the form factor amplitude $A_{Sid\alpha} = 0$ and goes through each sub unit in the structure. For each sub unit it finds the path between the reference point and the sub unit iterated over using the breadth first search algorithm. If the path is empty, then the abseloute refernce point belongs to the sub unit iterated over and adds form factor amplitude of the reference point $\alpha$ to $A_{Sid\alpha}$. If the path is not empty for it takes the the amplitude for the first reference point in the path times the phase factor for the whole path times the formfactor amplitude of the last reference point (which is the first reference point hitting the sub unit iterated over, because of the path chosen) and adds that product to $A_{Sid\alpha}$. How the output is printed is determinet by the int form that can have a value between 1 and 4. 
+    \\\\ \texttt{getPhaseFactor( vector<AbsRefPoint> &path, int form )} takes a path represented by a vector and a integer form. If form = 0 then the function returns a symbolic representation of the path, $\Psi_{Sid\alpha \beta}$ Here $Sid$ is the id of the structure the path runs through and $\alpha$ is the reference point at the start of the path and $\beta$ is the reference point in the end of the path. If 0 $<$ form $<$ 5 the path between the the two reference points $\alpha$ and $\beta$ are found. Going through the paths reference points $i$ it is checked that $i$  are not linked meaning they are not responsible for gluing two sub units together. If they are not linked then they must belong to the same sub unit. The sub unit's phase factor for the two reference point is then called and takes the product with $\Psi_{Sid\alpha \beta}$ and that phase factor. Then $i$ is incremented and the process with checking is started again until the loop hit the second last reference point and $\Psi_{Sid\alpha \beta}$ is returned with a form determined by what value the integer, form, has. 
+     
+     \paragraph{The class SymbolInterface} The Class symbol interface take cares of all the symbols and indicies in the expressions for the factors through out the classes. I does this by mapping strings into symbols. This way we make sure we are not generating a lot of different symbols like $x$. Therefore symbol interface has the methods \texttt{getSymbol( string s, string latex )} and \texttt{getIndex( ex e, ex e1, e2, e3, e4, e5)}. The getSymbol method looks through a map (that contains a string as a key that maps to the symbol associated with that string) to find the string s. If s is found it return what s is mapping to. If s is not found then getSymbol generates a symbol assosiated to s, if the string latex is not empty then it adds the wanted latex expression too and returns the symbol. This way every time we call get symbol we make sure that there is only one kind of that symbol globally in the program. The getIndex method was mostly implemented to make less clustered code, because you needed 3 lines of code each time you had to define af symbol with an index. The getIndex method take 2 to 5 parameters. The first parameters is the symbol or expression you want to have indices after. The other 4 parameters are possible indicies to the first parameter. All the parameters are of type ex because that makes indicies are lot more flexible if you wanted to write $R_g^2$ in getIndex method then you would need to write \texttt{getIndex(pow(R,2),getSymbol(g))} since it \texttt{pow(R,2)} is not a symbol but an expression you would not be able to make the index if getIndex took other parameters than ex types.
+
+\subsection{Documentation}
+Now mainly i have talked about how the program works. Of course it could be nice to know how to use this. You can read this in the documentation to the program. The dokumentation is in the appendix \ref{documentation}.
+\begin{comment}
+This section serves as a documentation for a user of the program. For now the program can build with random walk polymers and rods.  
+    \subsection{Installation}
+    Since i haven't implemented a make file the user have to install ginac and compile the program self. For installing ginac see (\url{https://www.ginac.de/tutorial/#Installation}). After installing ginac clone the program through the github repository with:
+    \begin{center}
+        \url{https://github.com/Tobionecenobi/Scattering-equation-builder.git}.        
+    \end{center}
+    Build your structure in the main.cpp (how to do this is explained below). In your terminal open the github repository, file and run the compilation. In linux bash terminal compilation can be done using the gnu c++ compiler by running:
+    \begin{lstlisting}
+$g++ main.cpp Structure.cpp SymbolInterface.cpp -o scatteringFunctions -lginac
+    \end{lstlisting}
+    Now you can run the program. In the linux bash terminal this can be runned by:
+        \begin{lstlisting}
+$./scatteringFunctions
+        \end{lstlisting}
+
+    
+
+ \subsection{How to write a structure in main.cpp}
+    To build a structure of equally random walk polymer (meaining they all have the same $R_g$) joined together and print out the form factor of the structure in latex format:\\
+    \begin{lstlisting}[frame = single]
+    #include "Structure.hpp"
+    #include "RWPolymer.hpp"
+    #include "GeneralSubUnit.hpp"
+    #include "Struct2Sub.hpp"
+    #include "Rod.hpp"
+
+    int main()
+    {
+        //Generate a polymer
+        RWPolymer p1("p1");     
+        RWPolymer p2("p2");
+        RWPolymer p3("p3");
+        RWPolymer p4("p4");
+        
+        //Generate a structure
+        Structure S("S");       
+        
+        //Add the polymer p1 to the structure S
+        S.Add(&p1);            
+        
+        //Join the second polymer together in a chain
+        S.Join(&p2, RelRefPoint("end1"), AbsRefPoint("p1","end2"));
+        S.Join(&p3, RelRefPoint("end1"), AbsRefPoint("p2","end2"));
+        S.Join(&p4, RelRefPoint("end1"), AbsRefPoint("p3","end2"));
+        
+        //Get ginac to output in latex format
+        cout << latex;
+        
+        /*prints the formfactor of the structure S in a form where 
+        all polymers have equal R_g*/
+        cout << S.getFormFactor(0) << "=" << S.getFormFactor(4) << "\n";
+    }
+    \end{lstlisting}
+    The output is
+    \begin{lstlisting}
+{F}_{{S}}=6 \frac{{(-1+\exp(-x))}^{2}}{x^{2}}+4 \frac{-2.0+{(2.0)} 
+x+{(2.0)}\exp(- x)}{x^{2}}
+    \end{lstlisting}
+    In latex format this is:
+    \begin{align}
+    {F}_{{S}}=6 \frac{{(-1+\exp(-x))}^{2}}{x^{2}}+4 \frac{-2.0+{(2.0)} x+{(2.0)}\exp(- x)}{x^{2}}
+    \end{align}
+    The formfactor can also print out in different modes like if you want $R_g$ to be different for each polymer you can either choose 3 for x with indicies or 2 for $x=q^2 R_g$ with indicies in the formfactor parameters. 1 is in general symbol with "F" for the formfator, "A" for the amplitude factor and "$\Psi$" is phase factor. If the parameter is 0 you just get the a symbol "F" that represents the form factor of the whole structure. With the same structure but the parameter equal 3. By using the code snippet:
+    \begin{lstlisting}[frame = single]
+    cout << S.getFormFactor(0) << "=" << S.getFormFactor(3) << "\n";
+    \end{lstlisting}
+    In latex format the output becomes:
+    \begin{multline}
+        {F}_{{S} }=\frac{-2.0+{(2.0)} \exp(- R_{g:p4}^{2} q^{2})+{(2.0)}  R_{g:p4}^{2} q^{2}}{ R_{g:p4}^{4} q^{4}}+\frac{-2.0+{(2.0)}  R_{g:p3}^{2} q^{2}+{(2.0)} \exp(- R_{g:p3}^{2} q^{2})}{ R_{g:p3}^{4} q^{4}}\\+2 \frac{ {(-1+\exp(- R_{g:p3}^{2} q^{2}))} {(-1+\exp(- R_{g:p2}^{2} q^{2}))}}{ R_{g:p3}^{2} R_{g:p2}^{2} q^{4}}+2 \frac{ {(-1+\exp(- R_{g:p1}^{2} q^{2}))} {(-1+\exp(- R_{g:p2}^{2} q^{2}))}}{ R_{g:p1}^{2} R_{g:p2}^{2} q^{4}}\\+2 \frac{ {(-1+\exp(- R_{g:p4}^{2} q^{2}))} {(-1+\exp(- R_{g:p3}^{2} q^{2}))}}{ R_{g:p4}^{2} R_{g:p3}^{2} q^{4}}+\frac{-2.0+{(2.0)} \exp(- R_{g:p1}^{2} q^{2})+{(2.0)}  R_{g:p1}^{2} q^{2}}{ R_{g:p1}^{4} q^{4}}\\+\frac{-2.0+{(2.0)} \exp(- R_{g:p2}^{2} q^{2})+{(2.0)}  R_{g:p2}^{2} q^{2}}{ R_{g:p2}^{4} q^{4}}
+    \end{multline}
+    One of structures the phase factors and form factor amplitudes can be used by adding the code snippet:
+    \begin{lstlisting}[frame = single]
+//defining two abselout reference points you want the path for
+AbsRefPoint abs1 = AbsRefPoint("p1", "end1");                             
+AbsRefPoint abs2 = AbsRefPoint("p4", "end2");
+
+//prints the phase factor of structures path from abs1 to abs2
+cout<<S.getPhaseFactor(abs1, abs2, 0)<<"="<<S.getPhaseFactor(abs1,abs2,3)<<"\n\n"; 
+
+//Gets the form factor amplitude structure a point abs1
+cout<<S.getFormFactorAmplitude(abs1,0)<<"="<<S.getFormFactorAmplitude(abs1,2)<<"\n\n";
+    \end{lstlisting}
+    The output in latex format is:
+    \begin{equation}
+        {\Psi}_{{S} {end1} {end2} }= \exp(- q^{2} R_{g:p4}^{2}) \exp(- q^{2} R_{g:p3}^{2}) \exp(- q^{2} R_{g:p2}^{2}) \exp(- q^{2} R_{g:p1}^{2})
+    \end{equation}
+    \begin{equation}
+    \begin{aligned}
+        {A}_{{S} {end1} }=\frac{ \exp(- x_{p1}) {(-1+\exp(- x_{p2}))}}{x_{p2}}+\frac{ {(-1+\exp(- x_{p4}))} \exp(- x_{p1}) \exp(- x_{p2}) \exp(- x_{p3})}{x_{p4}}\\+\frac{-1+\exp(- x_{p1})}{x_{p1}}+\frac{ \exp(- x_{p1}) \exp(- x_{p2}) {(-1+\exp(- x_{p3}))}}{x_{p3}}
+    \end{aligned}
+    \end{equation}
+    The is also a possibility to call you call a sub unit's factor by add code snippet. 
+    \begin{lstlisting}[frame = single]
+//generate a rod
+Rod r1("r1");
+
+//generate a structure 
+Structure SRod("SRod");
+
+//Add rod r1 to the structure
+SRod.Add(&r1);
+
+//gets the formfactor of r1
+cout << r1.getFormFactor( 0 ) << "=" << r1.getFormFactor( 3 ) << "\n\n";
+      
+//Generates two relative reference points
+RelRefPoint rel1("end1");
+RelRefPoint rel2("end2");
+
+//gets the formfactor of r2
+cout << r1.getFormFactorAmplitude( rel1 , 0) << "=" << r1.getFormFactorAmplitude( rel1 , 2) << "\n\n";
+cout << r1.getPhaseFactor(rel1, rel2, 0) << "=" << r1.getPhaseFactor(rel1, rel2, 1) <<"\n\n";
+    \end{lstlisting}
+Here we have maked a rod sub unit called r1 and added it to the structure SRod. We got the factors of the sub unit r1, in latex format the output is:
+\begin{align}
+    {F}_{{r1} } {\beta^{2}}_{{r1} }&=-8 \sin(\frac{1}{2}  x)+2 \frac{\int_{0}^{x} dy\,\frac{\sin(y)}{y}}{x}\\
+    {A}_{{r1} {end1} } {\beta}_{{r1} }&=\frac{\int_{0}^{ L_{r1} q} dy\,\frac{\sin(y)}{y}}{ L_{r1} q}\\
+    {\Psi}_{{r1} {end1} {end2} }&=\frac{\sin(x_{r1})}{x_{r1}}
+\end{align}
+Here the formfactor is form 3 for equal rod meaning all having same length L, this would make sense if we only had one rod. The Amplitude factor is in form 2 where $x = qL$ with indicies. Last the phase factor is in form 1 where x has and indcies. Also notice that these integrals are generated by code and not written by me, pretty cool!
+
+ \subsection{classes}
+ The important classes to know for using this program is. Structure, GeneralSubUnit, RWPolymer and Rod. All the other classes you don't need to know what do other than it runs the machinery. 
+ \begin{labeling}{alligator}
+    \item [Structure] Structure is responsible for generating structures where the sub unit can live, it is also resposible of sticking sub unit together and get the structure's factor.
+    \item [GeneralSubUnit] Generalsubunis take care of getting the factors from its inheritors. 
+    \item [RWPolymer] RWPolymer is the class generating random walk polymers. It has two relative reference points "end1" and "end2" and its variable is $qR_g^2$ It keeps the factors for the sub unit it self, each relative refernce point, or each combination of the two relative reference points.
+    \item [Rod] Rod is the class generating rigid rods. It has two relative reference points "end1" and "end2" and its variables is $qL$. It keeps the factors for the sub unit it self, each relative reference point, or each combination of the two relative reference points.
+ \end{labeling}
+ 
+ \subsection{Useful functions and tricks}
+ The program has alot of functions. I will walk over the ones needed to build a structure and get the factors you want printed out.
+ \paragraph{Functions in structure}
+ \begin{labeling}{alligator}
+    \item[Structure S("id")] Calls the Structure class' constructor that generates and empty structure S with structure id "id"
+    \item [S.Add(&s)] Adds a sub unit, s, to an empty structure, S.
+    \item [S.Join(&s, RelRefPoint("r"), AbsRefPoint("s1","r1"))] Joins the sub unit s's relative reference point r to absolute reference point on the se structure, here the abseloute reference point is on sub unit s1.
+    \item [S.getFormFactor( int form )] Takes a integer that that goes from 0 to 4 and returns the form factor of the structure S. If the integer form = 0, the method returns a symbol representing the formfactor, if n = 1 it returns all the factors of the formfactor represent by their symbols "A" and $\Psi$, if form=2 it returns a the form factor where the variable is x with and indcies, if form = 3 the return is the variable what x substitutes and if form=4 it returns the form factor where the variable is only x that is engustiable from other variables x.
+    \item[S.getFormFactorAmplitude(AbsRefPoint abs, int form)] Takes an absolute reference point, abs and integer form. It returns, with the same systems with integers as S.getFormFactor(int form), the form factor amplitude for a absolute reference point abs.
+    \item[S.getPhaseFactor(AbsRefPoint abs, AbsRefPoint abs2, int n)] Takes two absolute reference points, abs and abs2, and returns, with the same systems with integers as S.getFormFactor(int form), the phase factor between the two reference points in the structure.
+ \end{labeling}
+ 
+ \paragraph{Functions for GeneralSubUnit, Rod and RWPolymer}
+  \begin{labeling}{alligator}
+    \item[GeneralSubUnit g("g\_id", int n)]
+    calls the constructor for general sub unit and generates general sub unit, g, with n relative reference points and sub unit id "g\_id".
+    \item[GeneralSubUnit g("g\_id", int n, vector$<$string$>$ &s)] calls the constructor for general sub unit and generates general subunit, g, with a vector of strings that is n in size used to name each reference point. The general sub unit gets the id "g\_id".
+    \item[Rod r("r\_id")] calls the constructor for class Rod and generates a rod, p, with id "r\_id".
+    \item[RWPolymer p(p\_id)] calls the constructor for class RWPolymer and generates a rod, p, with id "p\_id".e
+ \end{labeling}
+  For sub units, s, in general you can get the factors with these functions
+  \begin{labeling}{alligator}
+    \item[s.getFormFactor(int form)] Takes a integer that that goes from 0 to 3 and returns the form factor of the sub unit s. If the integer form = 0, the method returns a symbol representing the form factor, if form=1 it returns a the form factor where the variable is x with indices, if form = 2 the return is the variable what x substitutes and if form=3 it returns the form factor where the variable is only x that is engustiable from other variables x.
+    \item[s.getFormFactorAmplitude(RelRefPoint rel, int form)]Takes an relative reference point, rel, and integer, form. It returns, with the same systems with integers as s.getFormFactor(int form), the form factor amplitude for a relative reference point rel.
+    \item[s.getPhaseFactor(RelRefPoint rel, RelRefPoint rel2, int form)] Takes two relative reference points, rel and rel2, and returns, with the same systems with integers as s.getFormFactor(int form), the phase factor between the two reference points in the sub unit.
+  \end{labeling}
+\paragraph{ginac}
+
+Ginac have alot of nice function look at their tutorial, on their website \cite{Ginac}. Some that are nice know is:
+\begin{labeling}{alligator}
+    \item[cout $<<$ latex; ] Makes every ginac expression or symbol printed out in latex format
+    \item[expand()] expands a ginac expression;
+    \item[getsymbol(string s, string latex)] The method takes two parameter which are strings, but only requires the first to work. The first parameter, s, is the symbol, the second parameter, latex, is the expression in latex format if needed. An example could be getting the symbol getSymbol("PSI", "\textbackslash Psi"). This is not a method made by Ginac but is made by the developers to avoid clutter when making symbols.
+    \item[getIndex(ex s, ex i1, ex i2, ex i3, ex i4, ex i5)] Takes 5 Ginac expression parameters. The first is the symbol you want to have indices on, the second parameter is the first indicies and is required. The other 4 is indices but are not required. This method is implemented by the developers, again to have less clutter. 
+\end{labeling}
+These are the main functions to be able to build most structures. There are also other functions but they are mostely to help developers to see how the code behaves. 
+\end{comment}
